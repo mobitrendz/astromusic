@@ -1,0 +1,6 @@
+{
+  "name": "Drik-Siddhanta Music",
+  "description": "Experience Drik-Siddhanta Music and Sunrise Sidereal Chants—an astronomical music system combining traditional Vedic calculations with dynamically generated ambient ragas and archival spiritual chants.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

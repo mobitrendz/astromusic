@@ -1,0 +1,569 @@
+import React, { useState, useMemo } from "react";
+import { 
+  X, 
+  BookOpen, 
+  Info, 
+  MapPin, 
+  Volume2, 
+  Compass, 
+  HelpCircle,
+  Clock,
+  ExternalLink
+} from "lucide-react";
+
+interface SastraReportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  currentLanguage: 'en' | 'ml' | 'te';
+  locationDetails: {
+    lat: number;
+    lng: number;
+    placeName: string;
+    sunrise: string;
+    sunset: string;
+    isGeolocated: boolean;
+  };
+}
+
+export default function SastraReportModal({
+  isOpen,
+  onClose,
+  currentLanguage,
+  locationDetails,
+}: SastraReportModalProps) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'rahukalam' | 'location' | 'audio'>('overview');
+
+  // Render Live Calculated Rahu, Gulika & Yamagandam steps for the dynamic manual
+  const rahuKalamSteps = useMemo(() => {
+    const parseTimeToMinutes = (timeStr: string): number => {
+      if (!timeStr || timeStr === "--:--" || timeStr === "0") return 6 * 60;
+      const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (match) {
+        let hours = parseInt(match[1], 10);
+        const minutes = parseInt(match[2], 10);
+        const ampm = match[3].toUpperCase();
+        if (ampm === "PM" && hours < 12) hours += 12;
+        if (ampm === "AM" && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+      }
+      return 6 * 60;
+    };
+
+    const formatMinutesTo12Hr = (totalMinutes: number): string => {
+      const rounded = Math.round(totalMinutes);
+      let hours = Math.floor(rounded / 60) % 24;
+      const minutes = rounded % 60;
+      const ampm = hours >= 12 ? "PM" : "AM";
+      let displayHours = hours % 12;
+      if (displayHours === 0) displayHours = 12;
+      const displayMinutes = minutes.toString().padStart(2, "0");
+      return `${displayHours}:${displayMinutes} ${ampm}`;
+    };
+
+    const sunriseMins = parseTimeToMinutes(locationDetails.sunrise);
+    const sunsetMins = parseTimeToMinutes(locationDetails.sunset);
+    const dayDurationMins = sunsetMins - sunriseMins;
+    const partDurationMins = dayDurationMins / 8;
+
+    const daysOfWeek = {
+      en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      ml: ["ഞായറാഴ്ച", "തിങ്കളാഴ്ച", "ചൊവ്വാഴ്ച", "ബുധനാഴ്ച", "വ്യാഴാഴ്ച", "വെള്ളിയാഴ്ച", "ശനിയാഴ്ച"],
+      te: ["ఆదివారం", "సోమవారం", "మంగళవారం", "బుధవారం", "గురువారం", "శుక్రవారం", "శనివారం"]
+    };
+
+    const weekdayIndex = new Date().getDay();
+    const dayName = daysOfWeek[currentLanguage][weekdayIndex];
+
+    const partMapping: Record<number, number> = {
+      0: 8, // Sunday (8th part)
+      1: 2, // Monday (2nd part)
+      2: 7, // Tuesday (7th part)
+      3: 5, // Wednesday (5th part)
+      4: 6, // Thursday (6th part)
+      5: 4, // Friday (4th part)
+      6: 3, // Saturday (3rd part)
+    };
+
+    const gulikaMapping: Record<number, number> = {
+      0: 7, // Sunday
+      1: 6, // Monday
+      2: 5, // Tuesday
+      3: 4, // Wednesday
+      4: 3, // Thursday
+      5: 2, // Friday
+      6: 1, // Saturday
+    };
+
+    const yamaMapping: Record<number, number> = {
+      0: 5, // Sunday
+      1: 4, // Monday
+      2: 3, // Tuesday
+      3: 2, // Wednesday
+      4: 1, // Thursday
+      5: 7, // Friday
+      6: 6, // Saturday
+    };
+
+    const partNum = partMapping[weekdayIndex] || 8;
+    const startMin = sunriseMins + (partNum - 1) * partDurationMins;
+    const endMin = sunriseMins + partNum * partDurationMins;
+
+    const gulikaPartNum = gulikaMapping[weekdayIndex] || 7;
+    const gulikaStartMin = sunriseMins + (gulikaPartNum - 1) * partDurationMins;
+    const gulikaEndMin = sunriseMins + gulikaPartNum * partDurationMins;
+
+    const yamaPartNum = yamaMapping[weekdayIndex] || 5;
+    const yamaStartMin = sunriseMins + (yamaPartNum - 1) * partDurationMins;
+    const yamaEndMin = sunriseMins + yamaPartNum * partDurationMins;
+
+    return {
+      sunriseMinutes: sunriseMins,
+      sunsetMinutes: sunsetMins,
+      durationMinutes: dayDurationMins,
+      durationHours: (dayDurationMins / 60).toFixed(2),
+      partDuration: partDurationMins.toFixed(1),
+      partNum,
+      gulikaPartNum,
+      yamaPartNum,
+      todayName: dayName,
+      todayRahuStart: formatMinutesTo12Hr(startMin),
+      todayRahuEnd: formatMinutesTo12Hr(endMin),
+      todayGulikaStart: formatMinutesTo12Hr(gulikaStartMin),
+      todayGulikaEnd: formatMinutesTo12Hr(gulikaEndMin),
+      todayYamaStart: formatMinutesTo12Hr(yamaStartMin),
+      todayYamaEnd: formatMinutesTo12Hr(yamaEndMin),
+    };
+  }, [locationDetails, currentLanguage]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-300" id="sastra_report_portal_modal">
+      <div 
+        className="relative bg-[#FCFBF7] rounded-3xl border-3 border-[#D4C3A3] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-scale-up"
+        id="sastra_report_modal_card"
+      >
+        {/* Fancy Golden Header Accent */}
+        <div className="h-2 w-full bg-gradient-to-r from-amber-700 via-[#C29200] to-amber-700"></div>
+
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#D4C3A3]/60 bg-[#F9F5EE]" id="sastra_modal_header_row">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#FCF3E3] border border-[#C29200]/50 text-[#8D6E63]">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-serif text-[16px] sm:text-[18px] font-black text-[#3E2723] tracking-tight">
+                {currentLanguage === "ml" 
+                  ? "ശാസ്ത്ര - സാങ്കേതിക വിവരണം" 
+                  : currentLanguage === "te" 
+                    ? "శాస్త్ర సాంకేతిక వివరణ పుస్తకం" 
+                    : "Sastra & Technical Alignment Manual"}
+              </h2>
+              <p className="font-mono text-[9px] uppercase tracking-wider text-amber-800 font-extrabold mt-0.5">
+                {currentLanguage === "ml" ? "ആപ്പ് ഗൈഡും ആസ്ട്രോ മാത്തമാറ്റിക്സും" : currentLanguage === "te" ? "యాప్ గైడ్ మరియు ఖగోళ గణనలు" : "App Guide & Astro-Calculus"}
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-1.5 rounded-full hover:bg-neutral-200 text-neutral-500 hover:text-black transition cursor-pointer"
+            id="close_sastra_modal_btn"
+            title="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-[#D4C3A3]/40 bg-[#FAF7F1]" id="sastra_tabs_container">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'overview'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "ഗ്രന്ഥസംഗ്രഹം" : currentLanguage === "te" ? "పరిచయం" : "Overview"}
+          </button>
+          <button
+            onClick={() => setActiveTab('rahukalam')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'rahukalam'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "ത്രികാല ഗണിതം" : currentLanguage === "te" ? "త్రికాల లెక్కింపు" : "Tri-Kalam Math"}
+          </button>
+          <button
+            onClick={() => setActiveTab('location')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'location'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "ലൊക്കേഷൻ" : currentLanguage === "te" ? "స్థాన గుర్తింపు" : "Precision Location"}
+          </button>
+          <button
+            onClick={() => setActiveTab('audio')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'audio'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "ഓഡിയോ സ്ട്രീമിംഗ്" : currentLanguage === "te" ? "ఆడియో స్ట్రీమింగ్" : "Audio Feeding"}
+          </button>
+        </div>
+
+        {/* Scrollable Content Pane */}
+        <div className="flex-1 overflow-y-auto p-6 text-sm text-[#3E2723] leading-relaxed select-text" id="sastra_modal_body_content">
+          {activeTab === 'overview' && (
+            <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_overview">
+              <div className="p-4 rounded-2xl bg-[#FCF3E3] border border-[#D4C3A3]/50">
+                <h3 className="font-serif text-[14px] sm:text-[15px] font-black text-[#5D4037] mb-2 flex items-center gap-2">
+                  <Compass className="h-4 w-4 text-[#C29200]" />
+                  {currentLanguage === "ml" ? "പദ്ധതി വിവരണവും പരമ ലക്ഷ്യവും" : currentLanguage === "te" ? "అప్లికేషన్ ప్రాముఖ్యత మరియు లక్ష్యం" : "Celestial Workstation Purpose"}
+                </h3>
+                <p className="text-[#5D4037] font-medium text-[12px] sm:text-[13px] leading-relaxed">
+                  {currentLanguage === "ml" ? (
+                    "ഭാരതീയ ജ്യോതിശാസ്ത്രത്തെയും സംഗീതശാസ്ത്രത്തെയും ആധുനിക സാങ്കേതികവിദ്യയുടെ സഹായത്തോടെ നിങ്ങളുടെ വിരൽത്തുമ്പിൽ എത്തിക്കുക എന്നതാണ് ജിജ്ഞാസയോടെ തയ്യാറാക്കിയ ഈ ആപ്ലിക്കേഷന്റെ പ്രധാന ലക്ഷ്യം. പരമ്പരാഗത പഞ്ചാംഗ രീതികളിൽ ഉണ്ടാകുന്ന സമയവ്യത്യാസം ഒഴിവാക്കി തത്സമയ സൂര്യോദയ ക്രാന്തികളുമായി ചേരുന്ന സൂക്ഷ്മ മുഹൂർത്തങ്ങൾ ഇവിടെ പ്രദർശിപ്പിക്കുന്നു."
+                  ) : currentLanguage === "te" ? (
+                    "ప్రాచీన భారతీయుల నింగి గమనాలను, శాస్త్రీయ రాగ నిధాన సంగీతాన్ని నేటి సాంకేతిక అవసరాలకు సింక్ చేస్తూ ఈ అప్లికేషన్ సృష్టించబడింది. సాధారణ క్యాలెండర్స్ లో ఉండే పొరబాట్లు లేకుండా నేటి భౌగోళిక సూర్యోదయ సమయం ప్రకారం ఇక్కడ 30 ముహూర్తాల సమాచారాన్ని (Daily Muhurtas) పొందుపరిచాము."
+                  ) : (
+                    "This celestial workstation harmonizes classical Indian astronomical calculations (Drik-Ganitam) with real-time solar positioning to deliver accurate, coordinate-synchronized Daily Muhurtas and local astrological values. No pre-calculated global tables are used; everything is computed live on-the-fly."
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-serif text-[13px] font-bold text-amber-950 mb-1 border-b border-[#D4C3A3]/40 pb-1 flex items-center gap-1.5">
+                  <span className="text-amber-700">●</span>
+                  {currentLanguage === "ml" ? "ആപ്ലിക്കേഷൻ എന്തുചെയ്യുന്നു?" : currentLanguage === "te" ? "ఈ యాప్ ఏం చేస్తుంది?" : "What does this application do?"}
+                </h4>
+                <ul className="list-disc pl-5 text-[12px] space-y-1.5 text-neutral-700 font-sans">
+                  {currentLanguage === "ml" ? (
+                    <>
+                      <li><strong>പ്രാദേശിക നക്ഷത്ര ഗണനം:</strong> നിങ്ങളുടെ ലൊക്കേഷൻ കണ്ടെത്തി അവിടുത്തെ സൂര്യോദയവവുമായി ചേരുന്ന 30 ദൈനംദിന വൈദിക മുഹൂർത്തങ്ങളും തത്സമയ രാഹുകാലവും വിന്യാസത്തോടെ സപ്പോർട്ട് ചെയ്യുന്നു.</li>
+                      <li><strong>പ്രകൃതിദത്ത സംഗീതാലയം:</strong> ഓരോ രാശിക്കും ദിവ്യകാലങ്ങൾക്കും ചേരുന്ന ശാസ്ത്രീയമായ കീർത്തനങ്ങളും സഹസ്രനാമങ്ങളും നേരിട്ടുള്ള കൺട്രോളുകളിലൂടെ പ്ലേ ചെയ്യുന്നു.</li>
+                      <li><strong>വൈവിധ്യമാർന്ന ഭാഷാപിന്തുണ:</strong> മികച്ച വായനാനുഭവത്തിനായി നിലവിൽ മലയാളം, തെലുങ്ക്, ഇംഗ്ലീഷ് ഭാഷാ പതിപ്പുകൾ ലഭ്യമാക്കിയിരിക്കുന്നു.</li>
+                    </>
+                  ) : currentLanguage === "te" ? (
+                    <>
+                      <li><strong>దివ్య ముహూర్తాల గణన:</strong> ప్రతి రోజూ సూర్యోదయం నుండి మొదలయ్యే 30 ముహూర్తాల కాలాన్ని, ఈ రోజు యొక్క ఖచ్చితమైన రాహుకాలాన్ని లెక్కిస్తుంది.</li>
+                      <li><strong>అనుకూల అలయ ధ్వనులు:</strong> వివిధ ఆధ్యాత్మిక సాహెస్రనామ కీర్తనలు, సదాశివ పంచాక్షరి స్తోత్రాలు నేరుగా ఆఫ్‌లైన్ స్థిర వనరుల నుండి అందుబాటులో ఉంటాయి.</li>
+                      <li><strong>భాషా సమన్వయం:</strong> ఆండ్రాయిడ్ మరియు వెబ్ సాధనాల కోసం తెలుగు, మలయాళం మరియు ఇంగ్లీష్ భాషల అనువాదాలు పొందుపరచబడ్డాయి.</li>
+                    </>
+                  ) : (
+                    <>
+                      <li><strong>Dynamic Astro-Chronology:</strong> Live projection of the 30 Vedic daytime and nighttime Muhurthas along with corresponding traditional rulers and descriptions.</li>
+                      <li><strong>Remedial Temple Acoustics:</strong> Seamless play controls streaming authentic, traditional chants directly associated with specific planets and time frames.</li>
+                      <li><strong>Indian Regionalized UI:</strong> Fully localized in pure literary English, high-precision Malayalam, and classic Telugu dialects.</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+
+              <div className="text-[11px] font-mono text-[#8D6E63] border border-[#D4C3A3]/50 p-3 rounded-xl bg-amber-50/50 flex items-start gap-2 select-text">
+                <HelpCircle className="h-4 w-4 text-[#C29200] shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold underline block mb-1">
+                    {currentLanguage === "ml" ? "മാധവ-ശാസ്ത്ര സമന്വയം:" : currentLanguage === "te" ? "మాధవ-ఖగోళ సిద్ధాంతం:" : "Madhava-Vedic Astro Physics:"}
+                  </span>
+                  {currentLanguage === "ml" ? (
+                    "പഴയ വിഭജന പട്ടികകൾ ഒഴിവാക്കി കൃത്യമായ ഗോളീയ സ്ഥാനങ്ങളും, പ്രപഞ്ചത്തിന്റെ കാന്തിക വികിരണങ്ങളും ആസ്പദമാക്കിയാണ് എല്ലാ ജ്യോതിശാസ്ത്ര കണക്കുകൂട്ടലുകളും ഇവിടെ തയ്യാറാക്കിയിരിക്കുന്നത്. ഇത് ദൃഗ്ഗോചരമായ യാഥാർത്ഥ്യങ്ങളെ ശരിയായി അനുസ്മരിപ്പിക്കുന്നു."
+                  ) : currentLanguage === "te" ? (
+                    "మధ్యయుగ నాటి స్థిర పంచాంగాలను కాకుండా, సమకాలీన టెలిస్കോప్ ల ద్వారా నింగిని గమనిస్తే గ్రహాలు మరియు సూర్యుని స్థితులు ఎక్కడుంటాయో అదే సూత్రాలను ఇక్కడ నిరయన పద్ధతిలో అమలు చేసాము."
+                  ) : (
+                    "Deviating from unscientific tables, we calculate values on genuine spherical mechanics. Mathematical alignments are resolved utilizing physical Precession computations (Ayanamsa at ~50.29 arcseconds/year)."
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'rahukalam' && (
+            <div className="flex flex-col gap-4 animate-fade-in" id="sastra_tab_rahukalam">
+              <div className="border border-green-600/30 bg-green-50/50 rounded-2xl p-4 flex flex-col gap-2.5">
+                <h3 className="font-serif text-[14px] font-black text-green-950 flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-green-700" />
+                  {currentLanguage === "ml" ? "തത്സമയ ത്രികാല നിർണ്ണയം (രാഹു, ഗുളികൻ, യമകണ്ടകൻ)" : currentLanguage === "te" ? "తక్షణ త్రికాల లెక్కింపు సూత్రం" : "Tri-Kalam (Rahu, Gulika, Yama) Formulas & Live Sandbox"}
+                </h3>
+                <p className="text-green-950 font-sans text-[12px] leading-relaxed">
+                  {currentLanguage === "ml" ? (
+                    "രാഹുകാലം, ഗുളികകാലം, യമകണ്ടകം എന്നിവ പ്രാദേശിക ഉദയാസ്തമയ സമയങ്ങളെ അടിസ്ഥാനമാക്കിയാണ് ലൊക്കേഷനുകളിൽ നിർണ്ണയിക്കുന്നത്. പകലിലെ സമയദൈർഘ്യത്തെ കൃത്യമായി 8 തുല്യ ഭാഗങ്ങളായി വിഭജിച്ച ശേഷം, ദിവസേനയുള്ള പരമ്പരാഗത ഭാഗങ്ങൾ ഉപയോഗിച്ച് ഇവ കണക്കാക്കുന്നു."
+                  ) : currentLanguage === "te" ? (
+                    "రాహుకాలం, గుళికా కాలం మరియు యమగండములు ఒక రోజు సూర్యోదయ సమయం నుండి సూర్యాస్తమయం సమయం వరకు గల పగటి కాలాన్ని 8 సమాన భాగాలుగా విభజించి లెక్కిస్తారు. వారం రోజు ఆధారంగా ఖచ్చితమైన సమయాన్ని గ్రహిస్తాము."
+                  ) : (
+                    "Rahu Kalam, Gulika Kalam, and Yamagandam represent distinct sub-periods within the daylight hours. By obtaining the exact coordinate-synced local sunrise and sunset timings, the diurnal length is divided into exactly 8 equal segments ($Duration = Daylight / 8$), and traditional day-specific segments are allocated."
+                  )}
+                </p>
+              </div>
+
+              {/* Day segments breakdown table */}
+              <div className="overflow-x-auto border border-[#D4C3A3] rounded-xl bg-white shadow-3xs w-full max-w-full" id="rahukalam_segments_chart">
+                <table className="w-full min-w-[500px] text-left text-[11px] sm:text-[12px] font-sans">
+                  <thead className="bg-[#FAF7F1] border-b border-[#D4C3A3]">
+                    <tr>
+                      <th className="px-3 py-2 text-amber-950 font-bold">{currentLanguage === "ml" ? "ദിവസം" : currentLanguage === "te" ? "వారం" : "Weekday"}</th>
+                      <th className="px-3 py-2 text-red-950 font-bold text-center">Rahu (രാഹു)</th>
+                      <th className="px-3 py-2 text-amber-950 font-bold text-center">Gulika (ഗുളികൻ)</th>
+                      <th className="px-3 py-2 text-teal-950 font-bold text-center">Yama (യമൻ)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#D4C3A3]/40 text-neutral-700 font-mono text-[11px]">
+                    <tr className={new Date().getDay() === 1 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "തിങ്കൾ" : currentLanguage === "te" ? "సోమవారం" : "Monday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">2nd Part (07:30 - 09:00)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">6th Part (13:30 - 15:00)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">4th Part (10:30 - 12:00)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 2 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "ചൊവ്വ" : currentLanguage === "te" ? "మంగళవారం" : "Tuesday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">7th Part (15:00 - 16:30)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">5th Part (12:00 - 13:30)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">3rd Part (09:00 - 10:30)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 3 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "ബുധൻ" : currentLanguage === "te" ? "బుధవారం" : "Wednesday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">5th Part (12:00 - 13:30)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">4th Part (10:30 - 12:00)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">2nd Part (07:30 - 09:00)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 4 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "വ്യാഴം" : currentLanguage === "te" ? "గురువారం" : "Thursday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">6th Part (13:30 - 15:00)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">3rd Part (09:00 - 10:30)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">1st Part (06:00 - 07:30)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 5 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "വെള്ളി" : currentLanguage === "te" ? "శుక్రవారం" : "Friday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">4th Part (10:30 - 12:00)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">2nd Part (07:30 - 09:00)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">7th Part (15:00 - 16:30)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 6 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "ശനി" : currentLanguage === "te" ? "శనివారం" : "Saturday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">3rd Part (09:00 - 10:30)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">1st Part (06:00 - 07:30)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">6th Part (13:30 - 15:00)</td>
+                    </tr>
+                    <tr className={new Date().getDay() === 0 ? "bg-amber-100/40" : ""}>
+                      <td className="px-3 py-1.5 font-sans font-semibold">{currentLanguage === "ml" ? "ഞായർ" : currentLanguage === "te" ? "ఆదివారం" : "Sunday"}</td>
+                      <td className="px-3 py-1.5 text-center text-red-800">8th Part (16:30 - 18:00)</td>
+                      <td className="px-3 py-1.5 text-center text-amber-800">7th Part (15:00 - 16:30)</td>
+                      <td className="px-3 py-1.5 text-center text-teal-800">5th Part (12:00 - 13:30)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Dynamic live calculation sandbox */}
+              <div className="p-4 rounded-xl border-2 border-dashed border-[#D4C3A3] bg-[#FAF8F5]">
+                <span className="text-[9px] uppercase tracking-wider text-[#8D6E63] font-mono font-bold block mb-1">
+                  ⚡ {currentLanguage === "ml" ? "തത്സമയ ഗണിത മാതൃക (നിങ്ങളുടെ ലൊക്കേഷനിൽ):" : currentLanguage === "te" ? "తక్షణ లెక్కింపు వివరణ (మీ స్థానములో):" : "Calculations for your active location:"}
+                </span>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 text-[12px] font-medium border-b border-[#D4C3A3]/40 pb-2.5">
+                  <div>{currentLanguage === "ml" ? "തിരഞ്ഞെടുത്ത സ്ഥലം:" : currentLanguage === "te" ? "ఎంచుకున్న ప్రదేశము:" : "Selected Place:"}</div>
+                  <div className="text-right text-[#5D4037] truncate font-sans font-bold min-w-0" title={locationDetails.placeName}>{locationDetails.placeName}</div>
+
+                  <div>{currentLanguage === "ml" ? "സൂര്യോദയ സമയം:" : currentLanguage === "te" ? "సూర్యోదయం:" : "Sunrise Time:"}</div>
+                  <div className="text-right font-mono font-bold">{locationDetails.sunrise}</div>
+
+                  <div>{currentLanguage === "ml" ? "സൂര്യസ്തമയം സമയം:" : currentLanguage === "te" ? "సూర్యాస్తమయం:" : "Sunset Time:"}</div>
+                  <div className="text-right font-mono font-bold">{locationDetails.sunset}</div>
+
+                  <div>{currentLanguage === "ml" ? "പകലിന്റെ ദൈർഘ്യം:" : currentLanguage === "te" ? "పగటి నిడివి:" : "Day Duration:"}</div>
+                  <div className="text-right font-mono font-bold text-[#E65100]">
+                    {rahuKalamSteps.durationHours} hrs ({rahuKalamSteps.durationMinutes} mins)
+                  </div>
+
+                  <div>{currentLanguage === "ml" ? "ഓരോ ഭാഗത്തിന്റെയും ദൈർഘ്യം:" : currentLanguage === "te" ? "ప్రతి భాగం వ్యవధి:" : "Each Segment size:"}</div>
+                  <div className="text-right font-mono font-bold text-amber-800">{rahuKalamSteps.partDuration} mins</div>
+                </div>
+
+                <div className="pt-3">
+                  <span className="font-bold font-sans text-neutral-800 block text-[12px] mb-2 text-center">
+                    {currentLanguage === "ml" ? "ഇന്നത്തെ ദിവസം:" : currentLanguage === "te" ? "ఈ రోజు వారం:" : "Today is:"} 
+                    <span className="text-amber-800 ml-1 underline">{rahuKalamSteps.todayName}</span>
+                  </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    {/* Rahu Box */}
+                    <div className="bg-red-50 border border-red-200 px-3 py-2 rounded-xl text-center shadow-3xs">
+                      <span className="text-[8px] block uppercase font-mono font-black text-red-950 tracking-wider">
+                        {currentLanguage === "ml" ? "രാഹുകാലം" : currentLanguage === "te" ? "రాహుకాలం" : "Rahu Kalam"}
+                      </span>
+                      <span className="text-[12px] font-mono font-black text-red-900 block mt-0.5">
+                        {rahuKalamSteps.todayRahuStart} - {rahuKalamSteps.todayRahuEnd}
+                      </span>
+                      <span className="text-[8.5px] text-red-700/80 block font-sans mt-0.5">
+                        {currentLanguage === "ml" ? `ഭാഗം: ${rahuKalamSteps.partNum}/8` : currentLanguage === "te" ? `భాగం: ${rahuKalamSteps.partNum}/8` : `Segment: ${rahuKalamSteps.partNum}/8`}
+                      </span>
+                    </div>
+
+                    {/* Gulika Box */}
+                    <div className="bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl text-center shadow-3xs">
+                      <span className="text-[8px] block uppercase font-mono font-black text-amber-950 tracking-wider">
+                        {currentLanguage === "ml" ? "ഗുളികകാലം" : currentLanguage === "te" ? "గుళికా కాలం" : "Gulika Kalam"}
+                      </span>
+                      <span className="text-[12px] font-mono font-black text-amber-900 block mt-0.5">
+                        {rahuKalamSteps.todayGulikaStart} - {rahuKalamSteps.todayGulikaEnd}
+                      </span>
+                      <span className="text-[8.5px] text-amber-700/80 block font-sans mt-0.5">
+                        {currentLanguage === "ml" ? `ഭാഗം: ${rahuKalamSteps.gulikaPartNum}/8` : currentLanguage === "te" ? `భాగం: ${rahuKalamSteps.gulikaPartNum}/8` : `Segment: ${rahuKalamSteps.gulikaPartNum}/8`}
+                      </span>
+                    </div>
+
+                    {/* Yama Box */}
+                    <div className="bg-teal-50 border border-teal-200 px-3 py-2 rounded-xl text-center shadow-3xs">
+                      <span className="text-[8px] block uppercase font-mono font-black text-teal-950 tracking-wider">
+                        {currentLanguage === "ml" ? "യമകണ്ടകം" : currentLanguage === "te" ? "యమగండం" : "Yamagandam"}
+                      </span>
+                      <span className="text-[12px] font-mono font-black text-teal-900 block mt-0.5">
+                        {rahuKalamSteps.todayYamaStart} - {rahuKalamSteps.todayYamaEnd}
+                      </span>
+                      <span className="text-[8.5px] text-teal-700/80 block font-sans mt-0.5">
+                        {currentLanguage === "ml" ? `ഭാഗം: ${rahuKalamSteps.yamaPartNum}/8` : currentLanguage === "te" ? `భాగం: ${rahuKalamSteps.yamaPartNum}/8` : `Segment: ${rahuKalamSteps.yamaPartNum}/8`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'location' && (
+            <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_location">
+              <div className="p-4 rounded-2xl bg-amber-50/70 border border-[#D4C3A3] flex items-start gap-4">
+                <div className="flex items-center justify-center p-2 rounded-xl bg-orange-100 text-orange-800 shrink-0">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col text-[12px] sm:text-[13px]">
+                  <span className="font-serif font-black text-[#5D4037] block text-[14px]">
+                    {currentLanguage === "ml" ? "ലൊക്കേഷൻ കണ്ടെത്തൽ തത്വം" : currentLanguage === "te" ? "భూస్థాన గుర్తింపు సిద్ధాంతం" : "Precision Location Logic"}
+                  </span>
+                  <span className="text-neutral-600 block mt-1 leading-relaxed">
+                    {currentLanguage === "ml" ? (
+                      "ഒരു ഉപയോക്താവ് പേജ് തുറക്കുമ്പോൾ ആദ്യം ബ്രൗസറിന്റെ വിശ്വസനീയമായ ജിയോലൊക്കേഷൻ സിസ്റ്റം (Browser Geolocation API) ആണ് ആവശ്യപ്പെടുക. അതിന് അനുവാദം നൽകിയില്ലെങ്കിൽ, ഐപി അടിസ്ഥാനമാക്കിയുള്ള ഓട്ടോമാറ്റിക് റിവേഴ്സ് ലൂക്കപ്പ് സംവിധാനത്തിലേക്ക് കണക്ട് ചെയ്ത് ഏറ്റവും അടുത്തുള്ള നഗരവും അക്ഷാംശ രേഖാംശങ്ങളും നിർണ്ണയിക്കും."
+                    ) : currentLanguage === "te" ? (
+                      "వినియోగదారుల సమాచారం గోప్యంగా ఉంచుతూ మొదట ఉచిత బ్రౌజర్ లొకేషన్ పర్మిషన్ అడుగుతుంది. ఒకవేళ యూజర్ తిరస్కరిస్తే, ఇంటర్నెట్ IP ఆధారింతంగా ప్రాతిపదిక అక్షాంశాలను సేకరించి ఆ నగరానికి సంబంధించిన సూర్యోదయ సమయాలను సింక్ చేస్తుతాము."
+                    ) : (
+                      "To ensure immediate accuracy, the app executes a layered lookup strategy. It queries high-precision native browser Geolocation first. If declined, the system transparently utilizes a static IP geolocation database API flow to select coordinates automatically."
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-serif text-[13px] font-bold text-amber-950 mb-2 border-b border-[#D4C3A3]/40 pb-1 flex items-center gap-1.5">
+                  <span className="text-orange-600">●</span>
+                  {currentLanguage === "ml" ? "സ്ഥാനവിവരങ്ങൾ സ്വയം എങ്ങനെ മാറ്റാം?" : currentLanguage === "te" ? "మీకు నచ్చిన చోటికి లొకేషన్ ఎలా మార్చాలి?" : "How do I change the active location manually?"}
+                </h4>
+                <div className="p-4 bg-white border border-[#D4C3A3]/60 rounded-xl flex flex-col gap-2.5 text-[12px] sm:text-[13px] text-neutral-700">
+                  <p>
+                    {currentLanguage === "ml" ? (
+                      "മുകളിൽ നൽകിയിരിക്കുന്ന 'പ്രാദേശിക സൂര്യ ചലനം' എന്ന ബാക്സിന്റെ ഉള്ളിലുള്ള 'എഡിറ്റ് ലൊക്കേഷൻ (കൂട്ടിച്ചേർക്കുക)' എന്ന ബട്ടണിൽ ക്ലിക്ക് ചെയ്താൽ നിങ്ങൾക്ക് ഇഷ്ടമുള്ള നഗരത്തിന്റെ പേര്, അക്ഷാംശ രേഖാംശങ്ങൾ (latitude, longitude) എന്നിവ ഇവിടെ സ്വയം എന്റർ ചെയ്യാവുന്നതാണ്. അതിനനുസരിച്ച് മുഴുവൻ പേജിലെ സ്ഥാനവിവരങ്ങളും മന്ത്രങ്ങളിലെ പ്ലേ പാറ്റേണുകളും ഉടനടി അപ്ഡേറ്റ് ചെയ്യപ്പെടും."
+                    ) : currentLanguage === "te" ? (
+                      "పైన టెంపుల్ సన్ స్పెసిఫికేషన్స్ బాక్స్ లో గల 'సవరించు/Edit' ఆప్షన్ క్లిక్ చేసి, మీకు కావాల్సిన నగరము పేరు మరియు అక్షాంశ రేఖాంశ రేట్లు స్వయంగా నమోదు చేయవచ్చు. మీరు మార్చిన మరుక్షణమే రాహుకాలం మరియు 30 ముహూర్తాల సమాచారం మారతాయి."
+                    ) : (
+                      "Within the top golden 'Astrological-Chronometer Altar', select the edit option. You can manually type customized coordinates (Latitude, Longitude), customize the place name, and provide local offset timings. The entire app's timing algorithm shifts immediately on validation."
+                    )}
+                  </p>
+                  <div className="bg-neutral-50 p-2.5 rounded-lg border border-neutral-200 mt-1 flex flex-col gap-1 font-mono text-[10px] sm:text-[11px]">
+                    <div className="font-sans font-bold text-[#8D6E63] text-[11px] uppercase mb-1">
+                      {currentLanguage === "ml" ? "നിലവിലുള്ള ഡിഫോൾട്ട് കേന്ദ്രം:" : currentLanguage === "te" ? "ప్రస్తుత డిఫాల్ట్ ఆలయ కేంద్రం:" : "Active Base Default Fallback:"}
+                    </div>
+                    <div>🎯 Sri Venkateswara Swamy Temple, Tirumala (tirupati), AP</div>
+                    <div>🌐 Coordinates: 13.68° N, 79.35° E</div>
+                    <div>⏰ Standard Indian Time Zone Offset: UT +5.5 hours</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'audio' && (
+            <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_audio">
+              <div className="p-4 rounded-2xl bg-[#FCF8F2] border border-[#D4C3A3] flex items-start gap-4">
+                <div className="flex items-center justify-center p-2 rounded-xl bg-amber-100 text-[#C29200] shrink-0">
+                  <Volume2 className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col text-[12px] sm:text-[13px]">
+                  <span className="font-serif font-black text-[#5D4037] block text-[14px]">
+                    {currentLanguage === "ml" ? "ഇൻ്റർനെറ്റ് ആർക്കൈവ് സ്ട്രീമിംഗ്" : currentLanguage === "te" ? "archive.org కీర్తనల స్ట్రీమింగ్" : "Internet Archive Raw Mirror Streaming"}
+                  </span>
+                  <span className="text-neutral-600 block mt-1 leading-relaxed">
+                    {currentLanguage === "ml" ? (
+                      "ഈ ആപ്ലിക്കേഷന്റെ എല്ലാ സ്തോത്രങ്ങളും ശബ്ദ മന്ത്രങ്ങളും വിശ്വസനീയമായ ഇൻ്റർനെറ്റ് ആർക്കൈവ് (archive.org) ഫയലുകളിൽ നിന്നാണ് സജ്ജമാക്കിയിരിക്കുന്നത്. ഇത് റോയൽറ്റി ഫ്രീ ഫ്രീക്വൻസികളിൽ ഉള്ളതാണ്. സാധാരണ വെബ് പേജുകളിലെ റീഡയറക്റ്റുകൾ മറികടന്ന് നേരിട്ട് തരംഗങ്ങൾ സ്വീകരിക്കാൻ സബ് ഡൊമെയ്ൻ സ്ട്രീം കണ്ണികൾ ഉപയോഗിച്ചിരിക്കുന്നു."
+                    ) : currentLanguage === "te" ? (
+                      "మా ప్లాట్‌ఫారమ్ లో గల అన్ని మంత్రాలు మరియు స్తోత్రాలు అంతర్జాతీయ ఇంటర్నెట్ ఆర్కైవ్ (archive.org) యొక్క లైబ్రరీ నుండి సేకరించాము. ఇవన్నీ ఉచిత వినియోగ రకం కిందకు వస్తాయి. ఎటువంటి అంతరాయాలు కలుగకుండా raw `.mp3` ప్లాట్ ద్వారా వీటిని సంధించాము."
+                    ) : (
+                      "To provide high-quality, continuous playback, the application sources all devotional content and stotras directly from open-source, royalty-free MP3 directories on archive.org. Raw paths are targeted to guarantee high-performance buffered feeds without routing hiccups."
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-serif text-[13px] font-bold text-amber-950 mb-2 border-b border-[#D4C3A3]/40 pb-1 flex items-center gap-1.5">
+                  <span className="text-amber-700">●</span>
+                  {currentLanguage === "ml" ? "സുരക്ഷിത ഓഡിയോ സിസ്റ്റം" : currentLanguage === "te" ? "ఆడియో విశ్వసనీయత" : "Audio Path Verification & Backup Option"}
+                </h4>
+                <div className="p-4 bg-white border border-[#D4C3A3]/60 rounded-xl space-y-2.5 text-[12px] sm:text-[13px] text-neutral-700">
+                  <p>
+                    {currentLanguage === "ml" ? (
+                      "എഡിറ്റ് മോഡിൽ സ്വന്തമായി സ്റ്റീമിങ് കണ്ണികൾ നൽകാനും അഡ്മിൻ ആക്സസ് വഴി മറ്റുള്ളവ മാറ്റാനും ക്രമീകരണം വരുത്തിയിട്ടുണ്ട്. എല്ലാ ഫയലുകളും ക്ലയന്റുകളുടെ ലോക്കൽ ബ്രൗസറിൽ ഇൻസ്റ്റന്റായി ഡൗൺലോഡ് ചെയ്യപ്പെടാതെ നേരിട്ടുള്ള തരംഗ വിന്യാസത്തിലൂടെ പ്ലേ ചെയ്യുകയാണ് ചെയ്യുന്നത്."
+                    ) : currentLanguage === "te" ? (
+                      "యాప్ అడ్మిన్ మోడ్ ద్వారా మీ సొంత సబ్ లింక్స్ ను జత చేసే అవకాశాన్ని కల్పించాము. ఇంటర్నెట్ కనెక్షన్ స్పీడ్ ఆధారంగా ఇవి నేరుగా బ్రౌజర్ లో రన్ అవుతాయి."
+                    ) : (
+                      "All audio payloads are requested client-side using native HTMLMediaElement APIs. Administrators can fully override stable defaults to supply alternate URLs inside the Admin Settings dashboard, which persists configurations directly to responsive storage."
+                    )}
+                  </p>
+                  <p className="text-[11px] text-[#8D6E63] italic flex items-center gap-1">
+                    <span>💡</span> 
+                    {currentLanguage === "ml" 
+                      ? "ഓഡിയോ പ്ലേ തടസ്സപ്പെട്ടാൽ നെറ്റ്വർക്ക് സ്പീഡ് അല്ലെങ്കിൽ ആർക്കൈവ് സർവർ ലൊക്കേഷൻ പരിശോധിക്കുക." 
+                      : currentLanguage === "te" 
+                        ? "స్తోత్రం ప్లే కాకపోతే, మీ ఇంటర్నెట్ మరియు archive.org కనెక్టివిటీ సరిచూసుకోండి." 
+                        : "If buffer delays persist, check your network speeds or direct server connection to archive.org streams."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Link to Archive.org */}
+              <div className="flex justify-end pt-2" id="redirect_archive_org_banner">
+                <a 
+                  href="https://archive.org" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center gap-1.5 text-xs text-amber-850 hover:text-amber-950 hover:underline font-bold transition cursor-pointer"
+                >
+                  <span>Browse Internet Archive</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-6 py-4 border-t border-[#D4C3A3]/40 bg-[#F9F5EE] flex justify-between items-center" id="sastra_modal_footer_row">
+          <span className="text-[10px] font-mono font-extrabold text-[#8D6E63]">
+            {currentLanguage === "ml" ? "പതിപ്പ്: 2.1.0 • ഭാരതീയ ഗണിതം" : currentLanguage === "te" ? "వెర్షన్: 2.1.0 • భారతీయ గణితం" : "Ver: 2.1.0 • Indian Astrodynamics"}
+          </span>
+          <button 
+            onClick={onClose}
+            className="px-5 py-2 rounded-full bg-[#5D4037] text-white font-serif font-black text-[12px] hover:bg-amber-850 cursor-pointer shadow-md transition duration-200"
+            id="acknowledge_sastra_modal_btn"
+          >
+            {currentLanguage === "ml" ? "മനസ്സിലായി" : currentLanguage === "te" ? "సరే, తెలిసింది" : "Acknowledge"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
