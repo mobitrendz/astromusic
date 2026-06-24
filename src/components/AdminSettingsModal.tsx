@@ -88,6 +88,7 @@ export default function AdminSettingsModal({
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("shiva");
+  const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
 
   // Initialize editable config whenever currentConfig or isOpen changes
   useEffect(() => {
@@ -99,6 +100,7 @@ export default function AdminSettingsModal({
       }
       setSaveSuccess(false);
       setSaveError(null);
+      setShowResetConfirm(false);
     }
   }, [isOpen, currentConfig]);
 
@@ -123,11 +125,10 @@ export default function AdminSettingsModal({
 
   // Reset to static defaults
   const handleResetDefaults = () => {
-    if (window.confirm("Are you sure you want to revert all links back to original archive.org stable defaults?")) {
-      setEditConfig(JSON.parse(JSON.stringify(DEFAULT_AUDIO_CONFIG)));
-      setSaveSuccess(false);
-      setSaveError(null);
-    }
+    setEditConfig(JSON.parse(JSON.stringify(DEFAULT_AUDIO_CONFIG)));
+    setSaveSuccess(false);
+    setSaveError(null);
+    setShowResetConfirm(false);
   };
 
   // Submit link modifications to disk persistence
@@ -287,14 +288,34 @@ export default function AdminSettingsModal({
 
         {/* Modal Footer */}
         <div className="p-4 bg-[#2D241E] border-t border-[#D4C3A3] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={handleResetDefaults}
-            className="px-3.5 py-1.5 rounded-xl border border-[#D4C3A3]/20 hover:border-[#D4C3A3] text-stone-300 hover:text-stone-100 text-[10px] font-mono uppercase tracking-widest flex items-center gap-1.5 transition cursor-pointer"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            Defaults Reset
-          </button>
+          {showResetConfirm ? (
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-rose-300 font-bold">Are you sure?</span>
+              <button
+                type="button"
+                onClick={handleResetDefaults}
+                className="px-2.5 py-1 rounded-lg bg-rose-900 border border-rose-600 text-rose-100 text-[10px] font-mono uppercase tracking-wider transition hover:bg-rose-800 cursor-pointer"
+              >
+                Yes, Reset
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowResetConfirm(false)}
+                className="px-2.5 py-1 rounded-lg bg-stone-800 border border-stone-600 text-stone-300 text-[10px] font-mono uppercase tracking-wider transition hover:bg-stone-700 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowResetConfirm(true)}
+              className="px-3.5 py-1.5 rounded-xl border border-[#D4C3A3]/20 hover:border-[#D4C3A3] text-stone-300 hover:text-stone-100 text-[10px] font-mono uppercase tracking-widest flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Defaults Reset
+            </button>
+          )}
           
           <button
             type="button"

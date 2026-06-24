@@ -81,34 +81,34 @@ const MALAYALAM_MONTHS = [
 // 30 rich Lunar Tithis in order (15 Shukla + 15 Krishna)
 const TITHI_NAMES = [
   { en: "Prathama", ml: "പ്രഥമ", te: "ప్రథమ" },
-  { en: "Dwitiya", ml: "ദ്വിതീയ", te: "ద్వితీయ" },
+  { en: "Dwitiya", ml: "ദ്വിതിയ", te: "ద్వితీయ" },
   { en: "Tritiya", ml: "തൃതീയ", te: "తృతీయ" },
   { en: "Chaturthi", ml: "ചതുർത്ഥി", te: "చవితి" },
-  { en: "Panchami", ml: "പঞ্চമി", te: "పంచమి" },
+  { en: "Panchami", ml: "പഞ്ചമി", te: "పంచమి" },
   { en: "Shashti", ml: "ഷഷ്ഠി", te: "షష్ఠి" },
   { en: "Saptami", ml: "സപ്തമി", te: "సప్తమి" },
   { en: "Ashtami", ml: "അഷ്ടമി", te: "అష్టమి" },
-  { en: "Navami", ml: "നവമി", te: "నవమి" },
+  { en: "Navami", ml: "നവമി", te: "నവమి" },
   { en: "Dashami", ml: "ദശമി", te: "దశమి" },
   { en: "Ekadashi", ml: "ഏകാദശി", te: "ఏకాదశి" },
   { en: "Dwadashi", ml: "ദ്വാദശി", te: "ద్వాదశి" },
-  { en: "Trayodashi", ml: "ത്രയോദശി", te: "త్రయోదశి" },
+  { en: "Trayodashi", ml: "ത്രയോദശി", te: "త్రയോదశి" },
   { en: "Chaturdashi", ml: "ചതുർദ്ദശി", te: "చతుర్దశి" },
   { en: "Pournami", ml: "പൗർണ്ണമി", te: "పౌర్ణమి" },
 
   { en: "Prathama", ml: "പ്രഥമ", te: "ప్రథమ" },
-  { en: "Dwitiya", ml: "ദ്വിതീയ", te: "ద్వితీయ" },
+  { en: "Dwitiya", ml: "ദ്വിതിയ", te: "ద్వితీయ" },
   { en: "Tritiya", ml: "തൃതീയ", te: "తృతీయ" },
   { en: "Chaturthi", ml: "ചതുർത്ഥി", te: "చవితి" },
-  { en: "Panchami", ml: "പঞ্চമി", te: "పంచమి" },
+  { en: "Panchami", ml: "പഞ്ചമി", te: "పంచమి" },
   { en: "Shashti", ml: "ഷഷ്ഠി", te: "షష్ఠి" },
-  { en: "Saptami", ml: "സప్തമി", te: "సప్తమి" },
+  { en: "Saptami", ml: "സപ്തമി", te: "సప్తమి" },
   { en: "Ashtami", ml: "അഷ്ടമി", te: "అష్టమి" },
-  { en: "Navami", ml: "നവമി", te: "నవమి" },
-  { en: "Dashami", ml: "ദశമി", te: "దశమి" },
+  { en: "Navami", ml: "നവമി", te: "నവమి" },
+  { en: "Dashami", ml: "ദശമി", te: "దశమి" },
   { en: "Ekadashi", ml: "ഏകാദശി", te: "ఏకాదశి" },
   { en: "Dwadashi", ml: "ദ്വാദശി", te: "ద్వాదశి" },
-  { en: "Trayodashi", ml: "ത്രയോദശി", te: "త్రయోదశి" },
+  { en: "Trayodashi", ml: "ത്രയോദശി", te: "త్రയോదశి" },
   { en: "Chaturdashi", ml: "ചതുർദ്ദശി", te: "చతుర్దశి" },
   { en: "Amavasi", ml: "അമാവാസി", te: "అమావాస్య" },
 ];
@@ -188,7 +188,7 @@ function calculateSunriseSunsetOffline(
 
 interface HeroHeaderProps {
   currentLanguage: "en" | "ml" | "te";
-  onLanguageChange: (lang: "en" | "ml" | "te") => void;
+  onLanguageChange: (lang: "en" | "ml" | "te", isManual?: boolean) => void;
   locationDetails: {
     lat: number;
     lng: number;
@@ -412,7 +412,7 @@ export default function HeroHeader({
   const reverseGeocode = async (
     latitude: number,
     longitude: number,
-  ): Promise<string> => {
+  ): Promise<{ placeName: string; state?: string }> => {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=12`,
@@ -432,7 +432,8 @@ export default function HeroHeader({
           const countryCode = info.address.country_code
             ? info.address.country_code.toUpperCase()
             : "";
-          return countryCode ? `${townName}, ${countryCode}` : townName;
+          const placeName = countryCode ? `${townName}, ${countryCode}` : townName;
+          return { placeName, state: info.address.state };
         }
       }
     } catch (err) {
@@ -441,7 +442,7 @@ export default function HeroHeader({
         err,
       );
     }
-    return `${latitude.toFixed(2)}° N, ${longitude.toFixed(2)}° E`;
+    return { placeName: `${latitude.toFixed(2)}° N, ${longitude.toFixed(2)}° E` };
   };
 
   const handleSearchLocation = async () => {
@@ -525,24 +526,35 @@ export default function HeroHeader({
       setSearchError("");
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          setEditLat(latitude.toFixed(4));
-          setEditLng(longitude.toFixed(4));
-          const placeNameResult = await reverseGeocode(latitude, longitude);
-          setEditPlace(placeNameResult);
-          setIsSearchingApi(false);
+          try {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            setEditLat(latitude.toFixed(4));
+            setEditLng(longitude.toFixed(4));
+            const placeNameResult = await reverseGeocode(latitude, longitude);
+            setEditPlace(placeNameResult.placeName);
+            setIsSearchingApi(false);
+          } catch (err) {
+            console.warn("Exception in device manual positioning handle:", err);
+            setSearchError("GPS Fetch Exception");
+            setIsSearchingApi(false);
+          }
         },
         (error) => {
-          console.warn(error);
-          setSearchError(
-            currentLanguage === "ml"
-              ? "GPS ലഭ്യമല്ല"
-              : currentLanguage === "te"
-                ? "GPS అందుబాటులో లేదు"
-                : "GPS Denied / Failed",
-          );
-          setIsSearchingApi(false);
+          try {
+            console.warn(error);
+            setSearchError(
+              currentLanguage === "ml"
+                ? "GPS ലഭ്യമല്ല"
+                : currentLanguage === "te"
+                  ? "GPS అందుబాటులో లేదు"
+                  : "GPS Denied / Failed",
+            );
+            setIsSearchingApi(false);
+          } catch (err) {
+            console.warn("Exception in fallback device manual position error:", err);
+            setIsSearchingApi(false);
+          }
         },
         { enableHighAccuracy: true, timeout: 5000 },
       );
@@ -555,6 +567,29 @@ export default function HeroHeader({
   useEffect(() => {
     const runLocationAutoDetection = async () => {
       let isGpsSuccessful = false;
+
+      // Helper to auto-select language based on state/region name
+      const autoSelectLanguage = (stateName?: string) => {
+        try {
+          const isManuallySet = localStorage.getItem("drik_siddhanta_language_manually_set") === "true";
+          if (isManuallySet) return; // Respect manual selection
+
+          if (!stateName) return;
+
+          const normalized = stateName.toLowerCase().trim();
+          let targetLang: "en" | "ml" | "te" = "en";
+
+          if (normalized.includes("kerala")) {
+            targetLang = "ml";
+          } else if (normalized.includes("telangana") || normalized.includes("andhra pradesh")) {
+            targetLang = "te";
+          }
+
+          onLanguageChange(targetLang, false);
+        } catch (e) {
+          console.error("Error auto-selecting language:", e);
+        }
+      };
 
       // Helper function to fetch IP-based routing location as a fallback
       const fallbackToIpLookup = async () => {
@@ -572,6 +607,7 @@ export default function HeroHeader({
                 placeStr,
                 false,
               );
+              autoSelectLanguage(ipData.region);
               return;
             }
           }
@@ -585,27 +621,40 @@ export default function HeroHeader({
           "Sri Venkateswara Swamy Temple, Tirumala, Tirupati Urban, Andhra Pradesh 517504, India",
           false,
         );
+        autoSelectLanguage("Andhra Pradesh");
       };
 
       // Step 1: Accurate browser-native Geolocation API query first
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
-            isGpsSuccessful = true;
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+            try {
+              isGpsSuccessful = true;
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
 
-            // Resolve geographic town name and solar attributes
-            const placeNameResult = await reverseGeocode(latitude, longitude);
-            await fetchSolarData(latitude, longitude, placeNameResult, true);
+              // Resolve geographic town name and solar attributes
+              const placeNameResult = await reverseGeocode(latitude, longitude);
+              await fetchSolarData(latitude, longitude, placeNameResult.placeName, true);
+              autoSelectLanguage(placeNameResult.state);
+            } catch (err) {
+              console.warn("Exception in native geolocation watch, falling back:", err);
+              if (!isGpsSuccessful) {
+                await fallbackToIpLookup();
+              }
+            }
           },
           async (error) => {
-            console.warn(
-              "Browser Geolocation prompt failed or denied. Falling back to IP-based approximate location.",
-              error,
-            );
-            if (!isGpsSuccessful) {
-              await fallbackToIpLookup();
+            try {
+              console.warn(
+                "Browser Geolocation prompt failed or denied. Falling back to IP-based approximate location.",
+                error,
+              );
+              if (!isGpsSuccessful) {
+                await fallbackToIpLookup();
+              }
+            } catch (err) {
+              console.warn("Exception in fallback native geolocation error handler:", err);
             }
           },
           { enableHighAccuracy: true, timeout: 6000 },
@@ -616,7 +665,11 @@ export default function HeroHeader({
       }
     };
 
-    runLocationAutoDetection();
+    const delayTimer = setTimeout(() => {
+      runLocationAutoDetection();
+    }, 1500);
+
+    return () => clearTimeout(delayTimer);
   }, []);
 
   // Update clocks every second
@@ -652,12 +705,12 @@ export default function HeroHeader({
 
     const days = [
       { en: "Sunday", ml: "ഞായറാഴ്ച", te: "ఆదివారం" },
-      { en: "Monday", ml: "തിങ്കളാഴ്ച", te: "സോമవారం" },
+      { en: "Monday", ml: "തിങ്കളാഴ്ച", te: "సోമవారం" },
       { en: "Tuesday", ml: "ചൊവ്വാഴ്ച", te: "మంగళవారం" },
-      { en: "Wednesday", ml: "ബുധനാഴ്ച", te: "ബുധవారం" },
-      { en: "Thursday", ml: "വ്യാഴാഴ്ച", te: "ഗുരുవారం" },
-      { en: "Friday", ml: "വെള്ളിയാഴ്ച", te: "ശുക്രవారం" },
-      { en: "Saturday", ml: "ശനിയാഴ്ച", te: "ശനിవారం" },
+      { en: "Wednesday", ml: "ബുധനാഴ്ച", te: "బుధవారం" },
+      { en: "Thursday", ml: "വ്യാഴാഴ്ച", te: "గురువారం" },
+      { en: "Friday", ml: "വെള്ളിയാഴ്ച", te: "శుక్రవారం" },
+      { en: "Saturday", ml: "ശനിയാഴ്ച", te: "శనివారం" },
     ];
 
     const dayName =
@@ -1105,7 +1158,7 @@ export default function HeroHeader({
                   type="button"
                   onClick={() => setIsPlaying(!isPlaying)}
                   className="flex items-center justify-center h-9 w-9 rounded-full transition-all border-2 border-[#C29200]/30 bg-[#5D4037] text-[#FCF8F2] hover:bg-[#C29200] hover:text-[#2D241E] active:scale-90 shadow-md cursor-pointer duration-200 animate-fade-in"
-                  title={currentLanguage === "ml" ? "പ്ലേ/പോസ്" : currentLanguage === "te" ? "പ്ലേ/പാജ്" : "Play/Pause"}
+                  title={currentLanguage === "ml" ? "പ്ലേ/പോസ്" : currentLanguage === "te" ? "ప్లే/పాజ్" : "Play/Pause"}
                   id="banner_play_pause_btn"
                 >
                   {isPlaying ? (

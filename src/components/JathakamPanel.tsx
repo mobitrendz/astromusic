@@ -61,7 +61,7 @@ const RATIOS_MAP = [
     nameTelugu: "Simham",
     englishRA: "Leo",
     nativeMalayalam: "ചിങ്ങം",
-    nativeTelugu: "സിంഹം",
+    nativeTelugu: "సింహం",
   },
   {
     index: 6,
@@ -214,7 +214,7 @@ const getPlanetFullName = (id: string, lang: "en" | "ml" | "te"): string => {
   if (lang === "ml") {
     switch (id) {
       case "lagna":
-        return "ലഗ്നം";
+        return "లగ్నం";
       case "sun":
         return "സൂര്യൻ";
       case "moon":
@@ -234,7 +234,7 @@ const getPlanetFullName = (id: string, lang: "en" | "ml" | "te"): string => {
       case "ketu":
         return "കേതു";
       default:
-        return "ലഗ്നം";
+        return "లగ్నం";
     }
   }
   if (lang === "te") {
@@ -482,7 +482,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameEnglish: "Vara / Varaha",
     nameSanskrit: "वराह",
     nameMalayalam: "വരാഹം",
-    nameTelugu: "വరాహ",
+    nameTelugu: "వరాహ",
     deityEnglish: "Varaha (Vishnu's Boar Avatar)",
     deityMalayalam: "വരാഹമൂർത്തി (വിഷ്ണു)",
     deityTelugu: "వరాహస్వామి (విష్ణువు)",
@@ -542,7 +542,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameEnglish: "Vahni",
     nameSanskrit: "वह्नि",
     nameMalayalam: "വഹ്നി",
-    nameTelugu: "വహ్ని",
+    nameTelugu: "వహ్ని",
     deityEnglish: "Agni (Sacred Fire Messenger)",
     deityMalayalam: "അഗ്നിദേവൻ",
     deityTelugu: "అగ్నిదేవుడు",
@@ -554,7 +554,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameEnglish: "Naktanchara",
     nameSanskrit: "नक्तञ्चर",
     nameMalayalam: "നക്തഞ്ചരൻ",
-    nameTelugu: "നక్తంచర",
+    nameTelugu: "నక్తంచర",
     deityEnglish: "Rakshasa (Night Spirit)",
     deityMalayalam: "രാക്ഷസൻ (തമസ്സ്)",
     deityTelugu: "రాక్షస (తమస్సు)",
@@ -569,7 +569,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameTelugu: "వరుణ",
     deityEnglish: "Varuna (Cosmic Ocean Waters)",
     deityMalayalam: "വരുണദേവൻ",
-    deityTelugu: "വరుణుడు",
+    deityTelugu: "వరుణుడు",
     quality: "Shubha",
     isNight: false
   },
@@ -578,7 +578,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameEnglish: "Aryaman",
     nameSanskrit: "अर्यमन",
     nameMalayalam: "അര്യമാവ്",
-    nameTelugu: "అряమ",
+    nameTelugu: "అర్యమ",
     deityEnglish: "Aryaman (Ancestral Solar Light)",
     deityMalayalam: "അര്യമാ ദേവൻ",
     deityTelugu: "అర్యముడు",
@@ -666,7 +666,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameTelugu: "యమ",
     deityEnglish: "Yama (Justice & Death Master)",
     deityMalayalam: "യമധർമ്മരാജൻ",
-    deityTelugu: "యమധర్మరాజు",
+    deityTelugu: "యమధర్మరాజు",
     quality: "Ashubha",
     isNight: true
   },
@@ -735,7 +735,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameEnglish: "Vishnu",
     nameSanskrit: "विष्णु",
     nameMalayalam: "വിഷ്ണു",
-    nameTelugu: "വിष्णु",
+    nameTelugu: "విష్ణు",
     deityEnglish: "Vishnu (Sustainer of Lifeforce)",
     deityMalayalam: "മഹാവിഷ്ണു",
     deityTelugu: "మహావిష్ణువు",
@@ -774,7 +774,7 @@ export const MUHURTAS_LIST: MuhurtaData[] = [
     nameTelugu: "సముద్ర",
     deityEnglish: "Samudra (God of Infinite Cosmic Ocean)",
     deityMalayalam: "സമുദ്രദേവൻ",
-    deityTelugu: "സముద్రుడు (సాగర దేవత)",
+    deityTelugu: "సముద్రుడు (సాగర దేవత)",
     quality: "Shubha",
     isNight: true
   }
@@ -1214,7 +1214,7 @@ export default function JathakamPanel({
         nameEnglish: "Lagna",
         nameSanskrit: "Lagnam",
         nameMalayalam: "ലഗ്നം",
-        nameTelugu: "ലగ్നം",
+        nameTelugu: "లగ్నం",
         modernScientificName: "Ascendant (Interpreted Eastern Horizon)",
         currentConstellation: `${RATIOS_MAP.find((h) => h.index === lagnaHouseIdx)?.englishRA} (${RATIOS_MAP.find((h) => h.index === lagnaHouseIdx)?.nameSanskrit})`,
         declination: "N/A (Spatial Axis)",
@@ -1794,7 +1794,7 @@ export default function JathakamPanel({
                 <span className="block text-[9px] uppercase tracking-wider font-sans font-bold text-amber-400 mt-1">Muhurta</span>
               </div>
               <div className="flex-1 space-y-1 text-[#5D4037]">
-                <h4 className="font-serif font-bold text-[12px]">
+                <h4 className="font-serif font-bold text-[14px]">
                   {currentLanguage === "ml"
                     ? "30 നിത്യ മുഹൂർത്തങ്ങൾ (നൈരന്തര്യ ഗണിതം)"
                     : currentLanguage === "te"
@@ -1839,7 +1839,7 @@ export default function JathakamPanel({
                         ({currentLanguage === "ml"
                           ? `അധിപൻ: ${activeMuhurtaDetails.deityMalayalam}`
                           : currentLanguage === "te"
-                            ? `അధిపతి: ${activeMuhurtaDetails.deityTelugu}`
+                            ? `అధిపతి: ${activeMuhurtaDetails.deityTelugu}`
                             : `Deity: ${activeMuhurtaDetails.deityEnglish}`})
                       </span>
                     </div>

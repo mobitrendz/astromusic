@@ -93,7 +93,7 @@ const MUHURTA_DEVOTIONAL_THEMES: DevotionalCategory[] = [
     activeLyricsSanskrit: "जटाटवीगलज्जलप्रवाहपावितस्थले गलेऽवलम्ब्य लम्बितां  ",
     activeLyricsEnglish: "Jatataveegalajjala pravahapavitasthale, Galeavalambya lambitam bhujangatungamalikam. Damaddamaddamaddaman ninadavadamarvayam, Chakara chandatandavam.",
     activeLyricsMalayalam: "ജടാടവീഗളജ്ജല പ്രവാഹപാവിതസ്ഥലേ ഗളേവലംബ്യ ലംബിതാം ഭുജംകതുംഗമാലികാം. ഡമഡ്ഡമഡ്ഡമഡ്ഡമൻ പ്രവാഹതാം വിരിഞ്ചി ചകാര ചണ്ഡതാണ്ഡവം തനോതു നഃ ശിവ ശിവം.",
-    activeLyricsTelugu: "జటాటవీగలజ్జല ప్రവാహപാവിതస్థలే గలేవలంబ్య లంబితాం భుజంగతుంగమాలికామ్. డమడ్డമడ్డമడ్డമన్నినాదవడ్డమర్වయం ചകാര ചണ്ടതാണ്ടവം తనోతు నః శివః శివమ్.",
+    activeLyricsTelugu: "జటాటవీగలజ్జల ప్రవాహపావితస్థలే గలేవలంబ్య లంబితాం భుజంగతుంగమాలికామ్. డమడ్డమడ్డమడ్డమన్నినాదవడ్డమర్වయం చకార చణ్టతాణ్టవం తనోతు నః శివః శివమ్.",
     audioUrl: "https://dn721909.ca.archive.org/0/items/siva-sahasaranamam/Siva%20Sahasaranamam.mp3",
     baseFreq: 138.59, // C# (deep Shiva meditative pitch)
     droneScale: "Minor"
@@ -112,7 +112,7 @@ const MUHURTA_DEVOTIONAL_THEMES: DevotionalCategory[] = [
     activeLyricsSanskrit: "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात् ॥ सरस्वती महाभागे विद्ये कमललोचने । विद्यारूपे विशालाक्षि विद्यां देहि नमोऽस्तु ते ॥",
     activeLyricsEnglish: "Om Bhur Bhuvah Svah, Tat Savitur Varenyam, Bhargo Devasya Dhimahi, Dhiyo Yo Nah Prachodayat. Saraswati Mahabhage Vidye Kamalalochane, Vidyarupe Vishalakshi Vidyam Dehi Namostute.",
     activeLyricsMalayalam: "ഓം ഭൂർഭുവഃ സ്വഃ തത്സവിതുർവരേണ്യം ഭർഗോ ദേവസ്യ ധീമഹി ധിയോ യോ നഃ പ്രചോദയാത്. സരസ്വതീ മഹാഭാഗേ വിദ്യേ കമലലോചനേ വിദ്യാരൂപേ വിശാലാക്ഷി വിദ്യാം ദേഹി നമോസ്തുതേ.",
-    activeLyricsTelugu: "ఓం భూర్భువః స్వః തത്സവിതുർవారേണ്യം ഭർഗോ ദേവസ്യ ധീമഹി ധിയോ യോ നഃ പ്രచోదయాత్. సరస్వతీ మహాభాగే విద్యే కమలలోచనే విద్యారూపే విశాలాక్షి విద్యాం దేహి నమోస్తుతే.",
+    activeLyricsTelugu: "ఓం భూర్భువః స్వః తత్సవితు౼వారేణ్యం భ౼గో దేవస్య ధీమహి ధియో యో నః ప్రచోదయాత్. సరస్వతీ మహాభాగే విద్యే కమలలోచనే విద్యారూపే విశాలాక్షి విద్యాం దేహి నమోస్తుతే.",
     audioUrl: "https://dn711109.ca.archive.org/0/items/LalithaSahasranamamFull/Lalitha%20Sahasranamam%20Full.mp3",
     baseFreq: 233.08, // Bb (sweet auspicious prosperity key)
     droneScale: "Major"
@@ -122,7 +122,7 @@ const MUHURTA_DEVOTIONAL_THEMES: DevotionalCategory[] = [
     title: "Subramanya Sahasranamam",
     subSanskrit: "सुब्रह्मण्य सहस्रनाम स्तोत्रम्",
     malayalamTitle: "സുബ്രഹ്മണ്യ സഹസ്രനാമം",
-    teluguTitle: "సుబ్రహ్మణ్య സഹസ്രനാമമു",
+    teluguTitle: "సుబ్రహ్మణ్య సహస్రనామము",
     associatedDeities: "Lord Subramanya, Murugan, Kartikeya",
     relatedMuhurtas: "Yama (#21), PURUHUTA (#10), NAKTANCHARA (#12)",
     recommendedSahasranama: "Subramanya Sahasranamam",
@@ -141,7 +141,7 @@ const MUHURTA_DEVOTIONAL_THEMES: DevotionalCategory[] = [
     title: "Ganesha Sahasranamam",
     subSanskrit: "गणेश सहस्रनाम स्तोत्रम्",
     malayalamTitle: "ഗണേശ സഹസ്രനാമം",
-    teluguTitle: "ഗണേഷ സഹസ്രനാമമു",
+    teluguTitle: "గణేశ సహస్రనామము",
     associatedDeities: "Lord Ganesha, Vigneshwara, Ganapathy",
     relatedMuhurtas: "Mitra (#3), Yumigadyuti (#28), Jiva/Guru (#26)",
     recommendedSahasranama: "Ganesha Sahasranamam",
@@ -149,7 +149,7 @@ const MUHURTA_DEVOTIONAL_THEMES: DevotionalCategory[] = [
     recommendedBhajana: "Vatapi Ganapatim",
     activeLyricsSanskrit: "ॐ एकदन्ताय विद्महे वक्रतुण्डाय धीमहि तन्नो दन्ती प्रचोदयात् ॥ सुमुखश्चैकదन्तశ్చ కపిలో గజకర్ణకః । లంబోదరశ్చ వికటో విఘ్ననాశో వినాయకః ॥",
     activeLyricsEnglish: "Om Ekadantaya Vidmahe Vakratundaya Dhimahi Tanno Danti Prachodayat. Sumukhashchaikantashcha kapilo gajakarnakah, Lambodarashcha vikato vighnanasho vinayakah.",
-    activeLyricsMalayalam: "ഓം ഏകദന്തായ വിദ്മഹേ വక్రതുണ്ഡായ ധീമഹി തന്നോ ദന്തീ പ്രചോദയാത്. സരസ്വതീ മഹാഭാഗേ വിദ്യേ കമലലോചനേ പ്രോതാഹി വിഘ്നനാശോ വിനായകഃ.",
+    activeLyricsMalayalam: "ഓം ഏകദന്തായ വിദ്മഹേ വക്രതുണ്ഡായ ധീമഹി തന്നോ ദന്തീ പ്രചോദയാത്. സരസ്വതീ മഹാഭാഗേ വിദ്യേ കമലലോചനേ പ്രോതാഹി വിഘ്നനാശോ വിനായകഃ.",
     activeLyricsTelugu: "ఓం ఏకదంతాయ విద్మహే వక్రతుండాయ ధీమహి తన్నో దంతీ ప్రచోదయాత్. సుముఖశ్చైకదంతశ్చ కపిలో గజకర్ణకః, లంబోదరశ్చ వికటో విఘ్ననాశో వినాయకః.",
     audioUrl: "https://dn710201.ca.archive.org/0/items/ganesa-sahasranamam-other-ganesa-stotras/Ganesa%20Sahasranamam%20and%20Other%20Ganesa%20Stotras/002-Sri%20Ganesa%20Sahasranamam.mp3",
     baseFreq: 185.00, // F# (cognitive clarity intellectual note)
@@ -182,7 +182,7 @@ interface PlaylistTrack {
   nameMl: string;
   nameTe: string;
   url: string;
-  category: "mantra" | "stotram" | "suprabhatam" | "sahasranamam" | "songs";
+  category: "mantra" | "stotram" | "suprabhatam" | "sahasranamam" | "songs" | "shirdi";
   lyricsSanskrit: string;
   lyricsEnglish: string;
   lyricsMalayalam: string;
@@ -338,7 +338,7 @@ const SACRED_TREASURY_PLAYLIST: PlaylistTrack[] = [
     id: "shiva_sahasranama",
     nameEn: "Sri Shiva Sahasranamam",
     nameMl: "ശ്രീ ശിവ സഹസ്രനാമം",
-    nameTe: "శ్రీ శివ സഹస్రనామము",
+    nameTe: "శ్రీ శివ సహస్రనామము",
     url: "https://dn721909.ca.archive.org/0/items/siva-sahasaranamam/Siva%20Sahasaranamam.mp3",
     category: "sahasranamam",
     lyricsSanskrit: "जटाटवीगलज्जलप्रवाहपावितस्थले गलेऽवलम्ब्य लम्बितां भुजङ्गतुङ्गमालिकाम् ॥ डमड्डमड्डमड्डमन्निनादवड्डमर्वयं चकार चण्डताण्डवं तनोतु नः शिवः शिवम् ॥",
@@ -350,7 +350,7 @@ const SACRED_TREASURY_PLAYLIST: PlaylistTrack[] = [
     id: "lalitha_sahasranama",
     nameEn: "Sri Lalitha Sahasranamam",
     nameMl: "ശ്രീ ലളിതാ സഹസ്രനാമം",
-    nameTe: "శ్రీ లలితా സഹസ്രനാമമു",
+    nameTe: "శ్రీ లలితా సహస్రనామము",
     url: "https://dn711109.ca.archive.org/0/items/LalithaSahasranamamFull/Lalitha%20Sahasranamam%20Full.mp3",
     category: "sahasranamam",
     lyricsSanskrit: "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात् ॥ सरस्वती महाभागे विद्ये कमललोचने । विद्यारूपे विशालाक्षि विद्यां देहि नमोऽस्तु ते ॥",
@@ -379,7 +379,7 @@ const SACRED_TREASURY_PLAYLIST: PlaylistTrack[] = [
     category: "sahasranamam",
     lyricsSanskrit: "ॐ एकदन्ताय विद्महे वक्रतुण्डाय धीमहि तन्नो दन्ती प्रचोदयात् ॥ सुमुखश्चैकदन्तश्च कपिलो गजकर्णकः । लम्बोदरश्च विकटो विघ्ननाशो विनायकः ॥",
     lyricsEnglish: "Om Ekadantaya Vidmahe Vakratundaya Dhimahi Tanno Danti Prachodayat. Sumukhashchaikantashcha kapilo gajakarnakah, Lambodarashcha vikato vighnanasho vinayakah.",
-    lyricsMalayalam: "ഓം ഏകദന്തായ വിദ്മഹേ वక్రതുണ്ഡായ ധീമഹി തന്നോ ദന്തീ പ്രചോദയാത്. സരസ്വതീ മഹാഭാഗേ വിദ്യേ കമലലോചനേ പ്രോതാഹി വിഘ്നനാശോ വിനായകഃ.",
+    lyricsMalayalam: "ഓം ഏകദന്തായ വിദ്മഹേ वക്രതുണ്ഡായ ധീമഹി തന്നോ ദന്തീ പ്രചോദയാത്. സരസ്വതീ മഹാഭാഗേ വിദ്യേ കമലലോചനേ പ്രോതാഹി വിഘ്നനാശോ വിനായകഃ.",
     lyricsTelugu: "ఓం ఏకదంతాయ విద్మహే వక్రతుండాయ ధీమహి తన్నో దంతీ ప్రచోదయాత్. సుముఖశ్చైకదంతశ్చ కపిలో గజకర్ణకః, లంబోదరశ్చ వికటో విఘ్ననాశో వినాయకః."
   },
   {
@@ -416,7 +416,55 @@ const SACRED_TREASURY_PLAYLIST: PlaylistTrack[] = [
     lyricsSanskrit: "श्री श्रीनिवास गोविंदा श्री वेंकटेश गोविंदा ॥ भक्तवत्सल गोविंदा भागवतप्रिय गोविंदा ॥",
     lyricsEnglish: "Shri Srinivasa Govinda Sri Venkatesa Govinda, Bhaktavatsala Govinda Bhagavatapriya Govinda.",
     lyricsMalayalam: "ശ്രീ ശ്രീനിവാസ ഗോവിന്ദാ ശ്രീ വെങ്കടേശ ഗോവിന്ദാ, ഭക്തവത്സല ഗോവിന്ദാ ഭാഗവതപ്രിയ ഗോവിന്ദാ.",
-    lyricsTelugu: "శ్రీ శ్రీనివాస గోవిందా శ్రీ వెంకటేశ గోవిందా, భక్తవత్సల గోవిందా భాగవతప్രിയ గోవిందా."
+    lyricsTelugu: "శ్రీ శ్రీనివాస గోవిందా శ్రీ వెంకటేశ గోవిందా, భక్తవత్సల గోవిందా భాగవతప్రియ గోవిందా."
+  },
+  {
+    id: "aarathi_sai_baba",
+    nameEn: "Aarathi Sai Baba",
+    nameMl: "ആരതി സായി ബാബ",
+    nameTe: "హారతి సాయి బాబా",
+    url: "https://dn710704.ca.archive.org/0/items/SaiBabaListenOnThursday/5-THURSDAY-SAI%20BABA/2-Aarathi%20SaiBaba.mp3",
+    category: "shirdi",
+    lyricsSanskrit: "आरती साईबाबा। सौख्यदातार जीव। चरणरजततळी। द्यावी विसावा भक्तजनां॥",
+    lyricsEnglish: "Aarathi Sai Baba, giver of joy and peace. May we find shelter at your lotus feet.",
+    lyricsMalayalam: "ആരതി സായി ബാബ, സന്തോഷവും സമാധാനവും നൽകുന്നവനെ. അങ്ങയുടെ താമരപ്പൂ പോലുള്ള പാദങ്ങളിൽ ഞങ്ങൾക്ക് അഭയം നൽകേണമേ.",
+    lyricsTelugu: "హారతి సాయి బాబా, భక్తులకు సుఖసంతోషాలు చేకూర్చే దైవం. మీ పాద పద్మాల చెంత మాకు ప్రశాంతతను ప్రసాదించండి."
+  },
+  {
+    id: "sai_suprabhatham",
+    nameEn: "Suprabhatham",
+    nameMl: "സുപ്രഭാതം",
+    nameTe: "సుప్రభాతం",
+    url: "https://ia801601.us.archive.org/19/items/SaiBabaListenOnThursday/5-THURSDAY-SAI%20BABA/1-Sri%20Satya%20Sai%20Suprabhatham.mp3",
+    category: "shirdi",
+    lyricsSanskrit: "ईशाय नमो परमात्मने नमो। सर्व मंगलाय नमो साईनाथाय नमो॥",
+    lyricsEnglish: "Morning prayers to Sai Nath, welcoming the divine grace and cosmic energy.",
+    lyricsMalayalam: "സായി നാഥനെ വന്ദിച്ചുകൊണ്ട് പ്രഭാത പ്രാർത്ഥനകൾ ആരംഭിക്കുന്നു, ദൈവീക കൃപയും ഊർജ്ജവും പ്രസാദിക്കട്ടെ.",
+    lyricsTelugu: "సాయి నాథుని స్మరిస్తూ శుభోదయం, దైవిక అనుగ్రహం మరియు ప్రశాంతత అందరికీ కలుగుగాక."
+  },
+  {
+    id: "sai_hey_pandu_ranga",
+    nameEn: "Sri SaiBaba - Hey Pandu Ranga",
+    nameMl: "ശ്രീ സായിബാബ - ഹേ പാണ്ഡുരംഗ",
+    nameTe: "శ్రీ సాయిబాబా - హే పాండురంగ",
+    url: "https://dn710704.ca.archive.org/0/items/SaiBabaListenOnThursday/5-THURSDAY-SAI%20BABA/3-Sri%20SaiBaba%20-%20Hey%20Pandu%20Ranga.mp3",
+    category: "shirdi",
+    lyricsSanskrit: "विठ्ठल हरी विठ्ठल पांडुरंग। साईनाथ महाराज की जय॥",
+    lyricsEnglish: "Devotional song linking Sai Baba to the incarnation of Lord Panduranga Vitthala.",
+    lyricsMalayalam: "സായി ബാബയെ പാണ്ഡുരംഗ വിഠലന്റെ അവതാരമായി വാഴ്ത്തുന്ന ഭക്തിഗാനം.",
+    lyricsTelugu: "సాయిబాబాను సాక్షాత్ ఆ పాండురంగ విఠలుని రూపంగా కీర్తించే మధుర భక్తి గీతం."
+  },
+  {
+    id: "sai_namam_talavagane",
+    nameEn: "Sai Namam Talavagane Hayi yedo kaligene",
+    nameMl: "സായി നാമം തലവഗനെ ഹായി യേതൊ കലിഗനെ",
+    nameTe: "సాయి నామం తలవగానే హాయి ఏదో కలిగెనే",
+    url: "https://ia801601.us.archive.org/19/items/SaiBabaListenOnThursday/5-THURSDAY-SAI%20BABA/4-Sai%20Namam%20Talavagane%20Hayi%20yedo%20kaligene.mp3",
+    category: "shirdi",
+    lyricsSanskrit: "साई नाम स्मरणमात्रेण परम शान्ति प्राप्यते॥",
+    lyricsEnglish: "Just by thinking of the name of Sai, a profound peace and joy arises in the heart.",
+    lyricsMalayalam: "സായിയുടെ നാമം സ്മരിക്കുമ്പോൾ തന്നെ ഹൃദയത്തിൽ അളവറ്റ ശാന്തിയും സന്തോഷവും അനുഭവപ്പെടുന്നു.",
+    lyricsTelugu: "సాయి నామాన్ని తలచుకోగానే మనసుకు ఎంతో హాయి, ఏదో తెలియని అమితానందం కలుగుతుంది."
   }
 ];
 
@@ -748,7 +796,7 @@ export default function DevotionalPlayer({
 
   // Sync track detail when category changes
   useEffect(() => {
-    const defaultName = activeCategory.title.split("&")[0].trim() + (currentLanguage === "ml" ? " പ്രധാന സ്തോത്രം" : currentLanguage === "te" ? " പ്രധാന స్తోత్రం" : " - Principal Chant");
+    const defaultName = activeCategory.title.split("&")[0].trim() + (currentLanguage === "ml" ? " പ്രധാന സ്തോത്രം" : currentLanguage === "te" ? " ప్రధాన స్తోత్రం" : " - Principal Chant");
     const customUrl = getDynamicAudioUrl(activeCategory.id, 'sahasranama');
     setActiveTrackUrl(customUrl);
     setActiveTrackName(defaultName);
@@ -767,7 +815,7 @@ export default function DevotionalPlayer({
   // Translate default track name when language switches
   useEffect(() => {
     if (!selectedPlaylistTrack) {
-      const defaultName = activeCategory.title.split("&")[0].trim() + (currentLanguage === "ml" ? " പ്രധാന സ്തോത്രം" : currentLanguage === "te" ? " പ്രധാന స్తోత్రం" : " - Principal Chant");
+      const defaultName = activeCategory.title.split("&")[0].trim() + (currentLanguage === "ml" ? " പ്രധാന സ്തോത്രം" : currentLanguage === "te" ? " ప్రధాన స్తోత్రం" : " - Principal Chant");
       setActiveTrackName(defaultName);
     }
   }, [currentLanguage, activeCategory, selectedPlaylistTrack]);
@@ -1270,7 +1318,7 @@ export default function DevotionalPlayer({
               {/* Tab Selectors */}
               {showAllAudio && (
                 <div className="flex flex-wrap gap-1 bg-[#F1E5D5]/80 p-0.5 rounded-lg border border-[#D4C3A3]/20 self-start md:self-auto shadow-inner">
-                  {(["all", "sahasranamam", "mantra", "stotram", "suprabhatam", "songs"] as const).map((tab) => {
+                  {(["all", "sahasranamam", "mantra", "stotram", "suprabhatam", "songs", "shirdi"] as const).map((tab) => {
                     const label = tab === "all"
                       ? (currentLanguage === "ml" ? "എല്ലാം" : currentLanguage === "te" ? "అన్నీ" : "All Chants")
                       : tab === "sahasranamam"
@@ -1281,6 +1329,8 @@ export default function DevotionalPlayer({
                             ? (currentLanguage === "ml" ? "സ്തോത്രങ്ങൾ" : currentLanguage === "te" ? "స్తోత్రాలు" : "Stotrams")
                              : tab === "songs"
                                ? (currentLanguage === "ml" ? "ഭക്തിഗാനങ്ങൾ" : currentLanguage === "te" ? "భక్తి గీతాలు" : "Devotional Songs")
+                             : tab === "shirdi"
+                               ? (currentLanguage === "ml" ? "ഷിർദ്ദി" : currentLanguage === "te" ? "షిరిడి" : "Shirdi")
                             : (currentLanguage === "ml" ? "തിരുപ്പതി" : currentLanguage === "te" ? "తిరుపతి" : "Tirupati");
                     return (
                       <button
@@ -1336,7 +1386,9 @@ export default function DevotionalPlayer({
                   : currentLanguage === "te"
                     ? track.nameTe
                     : track.nameEn;
-                const categoryLabel = track.category === "songs"
+                const categoryLabel = track.category === "shirdi"
+                  ? (currentLanguage === "ml" ? "ഷിർദ്ദി ഭക്തിഗാനം" : currentLanguage === "te" ? "షిరిడి భక్తి గీతం" : "Shirdi Devotion")
+                  : track.category === "songs"
                   ? (currentLanguage === "ml" ? "ഭക്തിഗാനം" : currentLanguage === "te" ? "భక్తి గీతం" : "Devotional Song")
                   : track.category === "mantra"
                   ? (currentLanguage === "ml" ? "മന്ത്രം" : currentLanguage === "te" ? "మంత్రం" : "Mantra")
@@ -1368,6 +1420,8 @@ export default function DevotionalPlayer({
                           <Disc className="h-3.5 w-3.5" />
                         ) : track.category === "songs" ? (
                           <Music className="h-3.5 w-3.5" />
+                        ) : track.category === "shirdi" ? (
+                          <Sparkles className="h-3.5 w-3.5" />
                         ) : (
                           <Sun className="h-3.5 w-3.5" />
                         )}

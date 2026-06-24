@@ -8,7 +8,10 @@ import {
   Compass, 
   HelpCircle,
   Clock,
-  ExternalLink
+  ExternalLink,
+  Github,
+  Mail,
+  User
 } from "lucide-react";
 
 interface SastraReportModalProps {
@@ -23,6 +26,7 @@ interface SastraReportModalProps {
     sunset: string;
     isGeolocated: boolean;
   };
+  onOpenIntro: () => void;
 }
 
 export default function SastraReportModal({
@@ -30,8 +34,9 @@ export default function SastraReportModal({
   onClose,
   currentLanguage,
   locationDetails,
+  onOpenIntro,
 }: SastraReportModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'rahukalam' | 'location' | 'audio'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'rahukalam' | 'location' | 'audio' | 'support'>('overview');
 
   // Render Live Calculated Rahu, Gulika & Yamagandam steps for the dynamic manual
   const rahuKalamSteps = useMemo(() => {
@@ -147,36 +152,52 @@ export default function SastraReportModal({
         <div className="h-2 w-full bg-gradient-to-r from-amber-700 via-[#C29200] to-amber-700"></div>
 
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#D4C3A3]/60 bg-[#F9F5EE]" id="sastra_modal_header_row">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#FCF3E3] border border-[#C29200]/50 text-[#8D6E63]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-[#D4C3A3]/60 bg-[#F9F5EE]" id="sastra_modal_header_row">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#FCF3E3] border border-[#C29200]/50 text-[#8D6E63] shrink-0 mt-0.5">
               <BookOpen className="h-5 w-5" />
             </div>
-            <div>
-              <h2 className="font-serif text-[16px] sm:text-[18px] font-black text-[#3E2723] tracking-tight">
+            <div className="min-w-0 flex-1">
+              <h2 className="font-serif text-[15px] sm:text-[18px] font-black text-[#3E2723] tracking-tight leading-tight">
                 {currentLanguage === "ml" 
                   ? "ശാസ്ത്ര - സാങ്കേതിക വിവരണം" 
                   : currentLanguage === "te" 
                     ? "శాస్త్ర సాంకేతిక వివరణ పుస్తకం" 
                     : "Sastra & Technical Alignment Manual"}
               </h2>
-              <p className="font-mono text-[9px] uppercase tracking-wider text-amber-800 font-extrabold mt-0.5">
+              <p className="font-mono text-[9px] uppercase tracking-wider text-amber-800 font-extrabold mt-0.5 leading-normal">
                 {currentLanguage === "ml" ? "ആപ്പ് ഗൈഡും ആസ്ട്രോ മാത്തമാറ്റിക്സും" : currentLanguage === "te" ? "యాప్ గైడ్ మరియు ఖగోళ గణనలు" : "App Guide & Astro-Calculus"}
               </p>
             </div>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-neutral-200 text-neutral-500 hover:text-black transition cursor-pointer"
-            id="close_sastra_modal_btn"
-            title="Close"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center justify-end gap-2 ml-13 sm:ml-0 shrink-0" id="sastra_header_buttons">
+            <button
+              onClick={onOpenIntro}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-[#5D4037] hover:text-[#3E2723] text-[11px] font-bold transition duration-150 cursor-pointer shadow-3xs shrink-0"
+              id="sastra_open_tour_btn"
+              title="Open Application Tour"
+            >
+              <Compass className="w-3.5 h-3.5 text-amber-700 animate-[spin_10s_linear_infinite] shrink-0" />
+              <span className="hidden min-[480px]:inline">
+                {currentLanguage === "ml" ? "ആപ്പ് പരിചയം" : currentLanguage === "te" ? "యాప్ పరిచయం" : "Application Tour"}
+              </span>
+              <span className="min-[480px]:hidden">
+                {currentLanguage === "ml" ? "പരിചയം" : currentLanguage === "te" ? "పరిచయం" : "Tour"}
+              </span>
+            </button>
+            <button 
+              onClick={onClose}
+              className="p-1.5 rounded-full hover:bg-neutral-200 text-neutral-500 hover:text-black transition cursor-pointer shrink-0"
+              id="close_sastra_modal_btn"
+              title="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-[#D4C3A3]/40 bg-[#FAF7F1]" id="sastra_tabs_container">
+        <div className="grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-5 border-b border-[#D4C3A3]/40 bg-[#FAF7F1]" id="sastra_tabs_container">
           <button
             onClick={() => setActiveTab('overview')}
             className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
@@ -217,6 +238,16 @@ export default function SastraReportModal({
           >
             {currentLanguage === "ml" ? "ഓഡിയോ സ്ട്രീമിംഗ്" : currentLanguage === "te" ? "ఆడియో స్ట్రీమింగ్" : "Audio Feeding"}
           </button>
+          <button
+            onClick={() => setActiveTab('support')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'support'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "സപ്പോർട്ട്" : currentLanguage === "te" ? "సపోర్ట్" : "Support"}
+          </button>
         </div>
 
         {/* Scrollable Content Pane */}
@@ -235,6 +266,29 @@ export default function SastraReportModal({
                     "ప్రాచీన భారతీయుల నింగి గమనాలను, శాస్త్రీయ రాగ నిధాన సంగీతాన్ని నేటి సాంకేతిక అవసరాలకు సింక్ చేస్తూ ఈ అప్లికేషన్ సృష్టించబడింది. సాధారణ క్యాలెండర్స్ లో ఉండే పొరబాట్లు లేకుండా నేటి భౌగోళిక సూర్యోదయ సమయం ప్రకారం ఇక్కడ 30 ముహూర్తాల సమాచారాన్ని (Daily Muhurtas) పొందుపరిచాము."
                   ) : (
                     "This celestial workstation harmonizes classical Indian astronomical calculations (Drik-Ganitam) with real-time solar positioning to deliver accurate, coordinate-synchronized Daily Muhurtas and local astrological values. No pre-calculated global tables are used; everything is computed live on-the-fly."
+                  )}
+                </p>
+              </div>
+
+              {/* Drigganitam Description Card */}
+              <div className="p-4 rounded-2xl bg-amber-50/75 border border-[#D4C3A3]/40 shadow-2xs" id="sastra_drigganitam_card">
+                <h3 className="font-serif text-[14px] sm:text-[15px] font-black text-[#5D4037] mb-2 flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-amber-700" />
+                  {currentLanguage === "ml" ? "ദൃഗ്ഗണിത സമ്പ്രദായം" : currentLanguage === "te" ? "దృగ్గణిత సిద్ధాంతం" : "The Science of Drigganitam"}
+                </h3>
+                <p className="text-[#5D4037] text-[12px] sm:text-[13px] leading-relaxed">
+                  {currentLanguage === "ml" ? (
+                    <>
+                      <strong>ദൃഗ്ഗണിതം (ദൃക്സിദ്ധാന്തം):</strong> പുരാതനവും മാറ്റമില്ലാത്തതുമായ സൂത്രവാക്യങ്ങൾക്ക് പകരം പ്രത്യക്ഷ നിരീക്ഷണങ്ങളെ അടിസ്ഥാനമാക്കി ഗ്രഹസ്ഥാനങ്ങൾ കണക്കാക്കുന്ന ശാസ്ത്രീയ ജ്യോതിശാസ്ത്ര രീതിയാണിത്. കേരളീയനായ വടശ്ശേരി പരമേശ്വരൻ നമ്പൂതിരിയെപ്പോലെയുള്ള ആചാര്യന്മാർ വികസിപ്പിച്ചെടുത്ത ദൃഗ്ഗണിത സമ്പ്രദായം, ടെലിസ്കോപ്പിലൂടെ കാണുന്ന യഥാർത്ഥ ഗ്രഹരേഖകളുമായി തികച്ചും പൊരുത്തപ്പെടുന്നു.
+                    </>
+                  ) : currentLanguage === "te" ? (
+                    <>
+                      <strong>దృగ్గణితం (దృక్సిద్ధాంతం):</strong> ప్రాచీన మార్పులేని సూత్రాలకు పరిమితం కాకుండా, కంటికి కనిపించే ఖగోళ స్థితుల ఆధారంగా గ్రహాల గమనాన్ని లెక్కించే శాస్త్రీయ పద్ధతి. కేరళకు చెందిన పరమేశ్వర వంటి మహర్షులు ప్రాచుర్యంలోకి తెచ్చిన ఈ విధానం, ఆధునిక టెలిస్కోప్ ల ద్వారా లభించే ఖచ్చితమైన అంతరిక్ష స్థానాలతో సంపూర్ణంగా ఏకీభవిస్తుంది.
+                    </>
+                  ) : (
+                    <>
+                      <strong>Drigganitam (Drik-Siddhanta):</strong> The scientific school of Indian astronomy that computes celestial positions using empirical, direct observation rather than archaic static formulas. Pioneered by legendary scholars like Paramesvara of Kerala, Drigganitam continuously aligns planetary calculus with true observable visual coordinates, ensuring perfect mathematical agreement with modern telescopes.
+                    </>
                   )}
                 </p>
               </div>
@@ -280,6 +334,37 @@ export default function SastraReportModal({
                   ) : (
                     "Deviating from unscientific tables, we calculate values on genuine spherical mechanics. Mathematical alignments are resolved utilizing physical Precession computations (Ayanamsa at ~50.29 arcseconds/year)."
                   )}
+                </div>
+              </div>
+
+              {/* Public Open-Source Github Repo Card */}
+              <div className="text-[11px] font-mono text-neutral-600 border border-neutral-300 p-3.5 rounded-xl bg-neutral-100/80 flex items-start gap-3 select-text shadow-3xs" id="github_open_source_note">
+                <Github className="h-5 w-5 text-neutral-800 shrink-0 mt-1" />
+                <div className="flex-1 min-w-0">
+                  <span className="font-sans font-bold text-neutral-800 block text-[12.5px] mb-1">
+                    {currentLanguage === "ml" ? "പൊതു ഓപ്പൺ സോഴ്സ് പദ്ധതി" : currentLanguage === "te" ? "ఓపెన్ సోర్స్ ఉచిత ప్రాజెక్ట్" : "Public Open-Source Initiative"}
+                  </span>
+                  <p className="font-sans leading-relaxed text-[11.5px] text-neutral-700">
+                    {currentLanguage === "ml" ? (
+                      "ഇതൊരു പൂർണ്ണമായ ഓപ്പൺ സോഴ്സ് പ്രോജക്റ്റാണ്; ഇതിന്റെ മുഴുവൻ കോഡും ഞങ്ങളുടെ പബ്ലിക് GitHub റിപ്പോസിറ്ററിയിൽ ലഭ്യമാണ്. താങ്കൾക്ക് ഇതിലേക്ക് സംഭാവനകൾ നൽകാനും പരിശോധിക്കാനും സാധിക്കും:"
+                    ) : currentLanguage === "te" ? (
+                      "ఇది సంపూర్ణ ఓపెన్ సోర్స్ ప్రాజెక్ట్; దీనికి సంబంధించిన పూర్తి సోర్స్ కోడ్ మా పబ్లిక్ GitHub రిపోజిటరీలో అందరికీ లభ్యమవుతుంది. మీరు కూడా భాగస్వామ్యం పంచుకోవచ్చు:"
+                    ) : (
+                      "This is an open-source project; the complete source code is available to the public in our GitHub repository. You are welcome to browse, inspect, or contribute to our workspace:"
+                    )}
+                  </p>
+                  <div className="mt-2.5">
+                    <a 
+                      href="https://github.com/mobitrendz/astromusic" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="inline-flex max-w-full items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-800 text-white font-sans font-semibold text-[11px] transition hover:bg-neutral-900 cursor-pointer shadow-3xs min-w-0"
+                    >
+                      <Github className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate min-w-0">github.com/mobitrendz/astromusic</span>
+                      <ExternalLink className="h-3 w-3 opacity-70 shrink-0" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -545,6 +630,85 @@ export default function SastraReportModal({
                   <span>Browse Internet Archive</span>
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'support' && (
+            <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_support">
+              <div className="p-4 rounded-2xl bg-[#FCF8F2] border border-[#D4C3A3] flex items-start gap-4">
+                <div className="flex items-center justify-center p-2 rounded-xl bg-amber-100 text-[#C29200] shrink-0">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col text-[12px] sm:text-[13px] flex-1">
+                  <span className="font-serif font-black text-[#5D4037] block text-[14px]">
+                    {currentLanguage === "ml" ? "സഹായവും സപ്പോർട്ടും" : currentLanguage === "te" ? "సహాయం మరియు సపోర్ట్" : "Support & Feedback"}
+                  </span>
+                  <span className="text-neutral-600 block mt-1 leading-relaxed">
+                    {currentLanguage === "ml" ? (
+                      "ഈ ആപ്ലിക്കേഷനെക്കുറിച്ചുള്ള നിങ്ങളുടെ വിലയേറിയ അഭിപ്രായങ്ങളും, പുതിയ ഭക്തിഗാനങ്ങളും സ്തോത്രങ്ങളും ഇതിലേക്ക് ചേർക്കുന്നതിനുള്ള നിർദ്ദേശങ്ങളും ഞങ്ങൾ എപ്പോഴും സ്വാഗതം ചെയ്യുന്നു."
+                    ) : currentLanguage === "te" ? (
+                      "ఈ అప్లికేషన్ పై మీ విలువైన అభిప్రాయాలను మరియు కొత్త భక్తి గీతాలు లేదా స్తోత్రాలను యాప్ లో చేర్చడానికి గల సూచనలను మేము ఎల్లప్పుడూ సంతోషంగా స్వీకరిస్తాము."
+                    ) : (
+                      "We always welcome your valuable feedback, suggestions, and submissions for new devotional audio tracks to be included in our sacred treasury."
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Developer Contact Card */}
+              <div className="p-4 bg-white border border-[#D4C3A3]/60 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" id="developer_contact_card">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-full bg-amber-50 border border-amber-200 text-[#8D6E63]">
+                    <User className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono font-bold text-[#8D6E63] block">
+                      {currentLanguage === "ml" ? "അഡ്മിനിസ്ട്രേറ്റർ & ക്യൂറേറ്റർ" : currentLanguage === "te" ? "నిర్వాహకుడు & క్యూరేటర్" : "Project Administrator & Curator"}
+                    </span>
+                    <span className="font-serif font-black text-[15px] text-[#3E2723]">
+                      Sreeraj Sreenivasan
+                    </span>
+                  </div>
+                </div>
+
+                <a 
+                  href="mailto:sreerajs@hotmail.com" 
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5D4037] text-white font-sans font-semibold text-[12px] transition hover:bg-amber-850 cursor-pointer shadow-3xs hover:shadow-xs self-stretch sm:self-auto text-center justify-center"
+                >
+                  <Mail className="h-4 w-4" />
+                  <span>sreerajs@hotmail.com</span>
+                  <ExternalLink className="h-3 w-3 opacity-80" />
+                </a>
+              </div>
+
+              {/* Guidelines for Audio Contributions */}
+              <div className="border border-amber-600/20 bg-amber-50/20 rounded-2xl p-4 flex flex-col gap-2.5">
+                <h4 className="font-serif text-[13px] font-bold text-amber-950 flex items-center gap-1.5">
+                  <span className="text-amber-700">●</span>
+                  {currentLanguage === "ml" ? "ഓഡിയോകൾ സമർപ്പിക്കുമ്പോൾ:" : currentLanguage === "te" ? "ఆరియాలు సమర్పించేటప్పుడు గమనించవలసినవి:" : "Guidelines for Audio Suggestions"}
+                </h4>
+                <ul className="list-disc pl-5 text-[12px] space-y-1 text-neutral-700 font-sans">
+                  {currentLanguage === "ml" ? (
+                    <>
+                      <li>ആർക്കൈവ് ചെയ്യപ്പെട്ട ഭക്തിഗാനങ്ങളുടെയോ മന്ത്രങ്ങളുടെയോ <strong>archive.org</strong> ലിങ്കുകൾ നേരിട്ട് നൽകുക.</li>
+                      <li>ട്രാക്കിന്റെ പേര്, ദൈവ സങ്കൽപ്പം, സാധ്യമെങ്കിൽ അതിന്റെ വരികൾ (ലിറിക്സ്) എന്നിവ ഉൾപ്പെടുത്തുക.</li>
+                      <li>നിങ്ങളുടെ നിർദ്ദേശങ്ങൾ പരിശോധിച്ച ശേഷം അവ അടുത്ത അപ്‌ഡേറ്റിൽ ആപ്പിൽ ഉൾപ്പെടുത്തുന്നതായിരിക്കും.</li>
+                    </>
+                  ) : currentLanguage === "te" ? (
+                    <>
+                      <li>ఉచితంగా లభించే భక్తి గీతాల లేదా మంత్రాల <strong>archive.org</strong> లింకులను నేరుగా పంపగలరు.</li>
+                      <li>ట్రాక్ యొక్క సరైన పేరు, దేవతా రూపం మరియు వీలైతే వాటి సాహిత్యాన్ని కూడా జతచేయండి.</li>
+                      <li>మీరు పంపిన లింకులను పరిశీలించి త్వరలోనే యాప్ లో పొందుపరుస్తాము.</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>If you have the <strong>archive.org</strong> link for the audio MP3 mirrors for the chants or hymns, please provide them.</li>
+                      <li>Include metadata: title of the track, deity, and lyrics in English/Regional scripts if available.</li>
+                      <li>Submissions will be reviewed and integrated directly into the application's core catalog.</li>
+                    </>
+                  )}
+                </ul>
               </div>
             </div>
           )}

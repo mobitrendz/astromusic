@@ -3,13 +3,41 @@ import HeroHeader from "./components/HeroHeader";
 import JathakamPanel from "./components/JathakamPanel";
 import DevotionalPlayer from "./components/DevotionalPlayer";
 import SastraReportModal from "./components/SastraReportModal";
+import IntroductionModal from "./components/IntroductionModal";
 import { Compass, ChevronLeft, ChevronRight } from "lucide-react";
 import { TRANSLATIONS } from "./translations";
 import { PHILOSOPHICAL_QUOTES } from "./data/quotes";
 
 export default function App() {
-  const [language, setLanguage] = useState<'en' | 'ml' | 'te'>('ml');
+  const [language, setLanguage] = useState<'en' | 'ml' | 'te'>(() => {
+    try {
+      const stored = localStorage.getItem("drik_siddhanta_language");
+      if (stored === 'en' || stored === 'ml' || stored === 'te') {
+        return stored;
+      }
+    } catch (e) {}
+    return 'en';
+  });
+
+  const handleLanguageChange = (lang: 'en' | 'ml' | 'te', isManual: boolean = true) => {
+    setLanguage(lang);
+    try {
+      localStorage.setItem("drik_siddhanta_language", lang);
+      if (isManual) {
+        localStorage.setItem("drik_siddhanta_language_manually_set", "true");
+      }
+    } catch (e) {}
+  };
+
   const [isSastraOpen, setIsSastraOpen] = useState<boolean>(false);
+  const [isIntroOpen, setIsIntroOpen] = useState<boolean>(() => {
+    try {
+      const hideIntro = localStorage.getItem("drik_siddhanta_hide_intro");
+      return hideIntro !== "true";
+    } catch (e) {
+      return true;
+    }
+  });
 
   // Lifted locationDetails state for global synchronization between header and panels
   const [locationDetails, setLocationDetails] = useState({
@@ -105,7 +133,7 @@ export default function App() {
       {/* Premium Hero Identity & Language Picker */}
       <HeroHeader 
         currentLanguage={language} 
-        onLanguageChange={(lang) => setLanguage(lang)} 
+        onLanguageChange={handleLanguageChange} 
         locationDetails={locationDetails}
         setLocationDetails={setLocationDetails}
         isPlaying={isPlaying}
@@ -212,6 +240,15 @@ export default function App() {
         onClose={() => setIsSastraOpen(false)}
         currentLanguage={language}
         locationDetails={locationDetails}
+        onOpenIntro={() => setIsIntroOpen(true)}
+      />
+
+      {/* Introduction Onboarding Slides Modal */}
+      <IntroductionModal 
+        isOpen={isIntroOpen}
+        onClose={() => setIsIntroOpen(false)}
+        currentLanguage={language}
+        onLanguageChange={handleLanguageChange}
       />
     </div>
   );
