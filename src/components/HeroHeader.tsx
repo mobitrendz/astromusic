@@ -22,6 +22,7 @@ import {
 import { TRANSLATIONS } from "../translations";
 import { estimateTimezoneOffset } from "../types";
 import { MUHURTAS_LIST } from "./JathakamPanel";
+import GaneshaIllustration from "./GaneshaIllustration";
 
 // Import downloaded high-fidelity Rudraksha assets
 // @ts-ignore
@@ -667,7 +668,7 @@ export default function HeroHeader({
 
     const delayTimer = setTimeout(() => {
       runLocationAutoDetection();
-    }, 1500);
+    }, 300);
 
     return () => clearTimeout(delayTimer);
   }, []);
@@ -1101,6 +1102,7 @@ export default function HeroHeader({
         <div className="mx-auto flex max-w-7xl w-full flex-col items-center justify-center relative z-10">
           {/* Sacred Traditional Invocation */}
           <div className="mb-4 text-center select-none flex flex-col items-center" id="sacred_invocation_banner">
+            <GaneshaIllustration className="w-16 h-16 sm:w-20 sm:h-20 mb-2 filter drop-shadow-sm" />
             <p className="font-serif text-[13px] sm:text-[15px] font-bold tracking-widest text-[#B07D1C] filter drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]">
               {currentLanguage === "ml"
                 ? "ഓം ഗം ഗണപതയേ നമഃ"
@@ -1123,6 +1125,7 @@ export default function HeroHeader({
               </div>
               <div className="flex flex-col gap-1 text-center sm:text-left">
                 <h1 className="font-serif text-[23px] sm:text-[29px] font-extrabold tracking-tight text-[#3E2723] leading-none drop-shadow-3xs">
+                  <span className="font-sans font-normal text-[24px] sm:text-[30px] tracking-normal mr-1.5 align-baseline inline-block">108</span>
                   {currentLanguage === "ml" ? "ദൃഗ്ഗണിത സംഗീതം" : currentLanguage === "te" ? "దృగ్గణిత సంగీతం" : "Drigganita Music"}
                 </h1>
                 <p className="font-sans text-[10.5px] sm:text-[11.5px] text-[#8D6E63] font-bold tracking-wider uppercase mt-1">

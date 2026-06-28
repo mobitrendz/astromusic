@@ -15,6 +15,14 @@ export default function App() {
       if (stored === 'en' || stored === 'ml' || stored === 'te') {
         return stored;
       }
+      
+      // Instantly guess preferred language from browser settings
+      const browserLangs = navigator.languages || [navigator.language];
+      for (const lang of browserLangs) {
+        const lower = lang.toLowerCase();
+        if (lower.startsWith("ml")) return "ml";
+        if (lower.startsWith("te")) return "te";
+      }
     } catch (e) {}
     return 'en';
   });

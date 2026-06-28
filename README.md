@@ -83,4 +83,4 @@ npm run start
 
 ## 📬 Contact & Feedback
 
-For any questions, feedback, or suggestions to grow our sacred treasury of chants, please contact **Sreeraj Sreenivasan** at [sreerajs@hotmail.com](mailto:sreerajs@hotmail.com).
+For any questions, feedback, or suggestions to grow our sacred treasury of chants, please contact **Admin Drigganita Music** at [astromusic@mobitrendz.com](mailto:astromusic@mobitrendz.com).

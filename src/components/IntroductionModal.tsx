@@ -7,7 +7,6 @@ import {
   Music, 
   Calendar, 
   BookOpen, 
-  MessageSquare, 
   ChevronLeft, 
   ChevronRight,
   Sparkles,
@@ -75,9 +74,9 @@ export default function IntroductionModal({ currentLanguage, onLanguageChange, i
     {
       id: 0,
       icon: <Sparkles className="w-8 h-8 text-amber-600" />,
-      titleEn: "Welcome to Drik-Siddhanta Chants",
-      titleMl: "ദൃഗ്ഗണിത സംഗീത ആപ്പിലേക്ക് സ്വാഗതം",
-      titleTe: "దృక్-సిద్ధాంత సంగీత యాప్ కు స్వాగతం",
+      titleEn: "Welcome to 108 Drigganita Music",
+      titleMl: "108 ദൃഗ്ഗണിത സംഗീതത്തിലേക്ക് സ്വാഗതം",
+      titleTe: "108 దృగ్గణిత సంగీతానికి స్వాగతం",
       descEn: "Experience a sacred astronomical music system combining traditional Vedic calculations with real-time devotional chants.",
       descMl: "പരമ്പരാഗത വൈദിക ഗണനങ്ങളും തത്സമയ ഭക്തിഗാനങ്ങളും സമന്വയിപ്പിക്കുന്ന വിശിഷ്ടമായ ഒരു ജ്യോതിശാസ്ത്ര സംഗീത സമ്പ്രദായം അനുഭവിക്കുക.",
       descTe: "సాంప్రదాయ వైదిక గణనలను మరియు నిజసమయ భక్తి గీతాలను సమన్వయపరిచే విశిష్ట ఖగోళ సంగీత ప్రక్రియను అనుభవించండి."
@@ -151,16 +150,6 @@ export default function IntroductionModal({ currentLanguage, onLanguageChange, i
       descEn: "The integrated Sastra Manual explains the complete mathematical formulas, scriptural foundations, and technical alignments used in the calculations.",
       descMl: "ആപ്ലിക്കേഷനിലെ ഗണനങ്ങളുടെ ശാസ്ത്രീയ അടിത്തറകളും പ്രമാണങ്ങളും ഫോർമുലകളും 'SASTRA & TECHNICAL ALIGNMENT MANUAL / REPORT' എന്നതിൽ വിശദീകരിച്ചിരിക്കുന്നു.",
       descTe: "ఈ అప్లికేషన్ లోని గణనల వెనుక ఉన్న శాస్త్రీయ సూత్రాలు మరియు పూర్తి వివరాలు 'SASTRA & TECHNICAL ALIGNMENT MANUAL / REPORT' లో నిక్షిప్తమై ఉన్నాయి."
-    },
-    {
-      id: 8,
-      icon: <MessageSquare className="w-8 h-8 text-amber-600" />,
-      titleEn: "Share Feedback & Suggest Chants",
-      titleMl: "നിർദ്ദേശങ്ങളും ഭക്തിഗാനങ്ങളും പങ്കുവെക്കാം",
-      titleTe: "సలహాలు & భక్తి గీతాల సమర్పణ",
-      descEn: "Send your valuable feedback or suggest new devotional audio tracks to Sreeraj Sreenivasan at sreerajs@hotmail.com to grow our sacred treasury.",
-      descMl: "നിങ്ങളുടെ വിലയേറിയ നിർദ്ദേശങ്ങളും പുതിയ ഭക്തിഗാനങ്ങളും ആപ്ലിക്കേഷനിലേക്ക് ചേർക്കുന്നതിനായി sreerajs@hotmail.com എന്ന വിലാസത്തിൽ ശ്രീരാജ് ശ്രീനിവാസന് അയക്കാവുന്നതാണ്.",
-      descTe: "మీ విలువైన సలహాలను లేదా కొత్త భక్తి గీతాలను యాప్ లో చేర్చడానికి శ్రీరాజ్ శ్రీనివాసన్ గారి ఈమెయిల్ sreerajs@hotmail.com కు పంపగలరు."
     }
   ];
 
@@ -201,11 +190,11 @@ export default function IntroductionModal({ currentLanguage, onLanguageChange, i
         id="introduction_overlay"
       >
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          initial={{ opacity: 0, scale: 0.96, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ type: "spring", duration: 0.4 }}
-          className="relative w-full max-w-lg max-h-[calc(100vh-2rem)] sm:max-h-[90vh] bg-[#FAF6F0] rounded-3xl border border-[#D4C3A3] shadow-2xl flex flex-col overflow-y-auto sm:overflow-hidden scrollbar-none"
+          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          transition={{ ease: "easeOut", duration: 0.2 }}
+          className="relative w-full max-w-lg max-h-[85vh] sm:max-h-[90vh] bg-[#FAF6F0] rounded-3xl border border-[#D4C3A3] shadow-2xl flex flex-col overflow-y-auto sm:overflow-hidden scrollbar-none"
           id="introduction_modal_box"
         >
           {/* Top Header Background Pattern */}
@@ -294,7 +283,15 @@ export default function IntroductionModal({ currentLanguage, onLanguageChange, i
 
                 <div className="flex flex-col gap-1 sm:gap-2 max-w-sm">
                   <h3 className="font-serif font-black text-[#3E2723] text-[14px] sm:text-[18px]">
-                    {getTitle()}
+                    {getTitle().includes("108") ? (
+                      <>
+                        {getTitle().split("108")[0]}
+                        <span className="font-sans font-normal tracking-normal mx-0.5 align-baseline">108</span>
+                        {getTitle().split("108")[1]}
+                      </>
+                    ) : (
+                      getTitle()
+                    )}
                   </h3>
                   <p className="text-[#5D4037] text-[12px] sm:text-[13px] leading-relaxed font-sans font-medium font-serif-ml">
                     {getDesc()}

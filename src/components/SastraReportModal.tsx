@@ -13,6 +13,8 @@ import {
   Mail,
   User
 } from "lucide-react";
+import { SACRED_TREASURY_PLAYLIST, getPlaylistForMuhurta } from "./DevotionalPlayer";
+import { MUHURTAS_LIST } from "./JathakamPanel";
 
 interface SastraReportModalProps {
   isOpen: boolean;
@@ -36,7 +38,21 @@ export default function SastraReportModal({
   locationDetails,
   onOpenIntro,
 }: SastraReportModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'rahukalam' | 'location' | 'audio' | 'support'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'rahukalam' | 'location' | 'muhurtas' | 'audio' | 'support'>('overview');
+
+  const audioStats = useMemo(() => {
+    const total = SACRED_TREASURY_PLAYLIST.length;
+    const mantras = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "mantra").length;
+    const stotrams = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "stotram").length;
+    const sahasranamams = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "sahasranamam").length;
+    const suprabhatams = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "suprabhatam").length;
+    const ashtakams = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "ashtakam").length;
+    const shirdi = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "shirdi").length;
+    const ayyappa = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "ayyappa").length;
+    const songs = SACRED_TREASURY_PLAYLIST.filter(t => t.category === "songs").length;
+    const others = total - (mantras + stotrams + sahasranamams + suprabhatams + ashtakams + shirdi + ayyappa + songs);
+    return { total, mantras, stotrams, sahasranamams, suprabhatams, ashtakams, shirdi, ayyappa, songs, others };
+  }, []);
 
   // Render Live Calculated Rahu, Gulika & Yamagandam steps for the dynamic manual
   const rahuKalamSteps = useMemo(() => {
@@ -197,7 +213,7 @@ export default function SastraReportModal({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-5 border-b border-[#D4C3A3]/40 bg-[#FAF7F1]" id="sastra_tabs_container">
+        <div className="grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-6 border-b border-[#D4C3A3]/40 bg-[#FAF7F1]" id="sastra_tabs_container">
           <button
             onClick={() => setActiveTab('overview')}
             className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
@@ -227,6 +243,16 @@ export default function SastraReportModal({
             }`}
           >
             {currentLanguage === "ml" ? "ലൊക്കേഷൻ" : currentLanguage === "te" ? "స్థాన గుర్తింపు" : "Precision Location"}
+          </button>
+          <button
+            onClick={() => setActiveTab('muhurtas')}
+            className={`w-full py-2.5 sm:py-3 text-center text-[9.5px] min-[360px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer whitespace-normal sm:whitespace-nowrap px-2 sm:px-4 ${
+              activeTab === 'muhurtas'
+                ? "border-amber-700 text-amber-900 bg-[#FCFBF7] font-extrabold"
+                : "border-transparent text-[#8D6E63] hover:text-amber-800 hover:bg-amber-50/20"
+            }`}
+          >
+            {currentLanguage === "ml" ? "30 മുഹൂർത്തങ്ങൾ" : currentLanguage === "te" ? "30 ముహూర్తములు" : "30 Muhurtas"}
           </button>
           <button
             onClick={() => setActiveTab('audio')}
@@ -571,6 +597,114 @@ export default function SastraReportModal({
             </div>
           )}
 
+          {activeTab === 'muhurtas' && (
+            <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_muhurtas">
+              <div className="p-4 rounded-2xl bg-[#FCF8F2] border border-[#D4C3A3] flex items-start gap-4 shadow-3xs">
+                <div className="flex items-center justify-center p-2 rounded-xl bg-amber-100 text-[#C29200] shrink-0">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col text-[12px] sm:text-[13px]">
+                  <span className="font-serif font-black text-[#5D4037] block text-[15px]">
+                    {currentLanguage === "ml" ? "30 സജീവ വൈദിക മുഹൂർത്തങ്ങളും പ്ലേലിസ്റ്റുകളും" : currentLanguage === "te" ? "30 వైదిక ముహూర్తములు మరియు ప్లేలిస్టులు" : "The 30 Vedic Muhurtas & Playlists Report"}
+                  </span>
+                  <span className="text-neutral-600 block mt-1 leading-relaxed text-xs">
+                    {currentLanguage === "ml" ? (
+                      "ഇവിടെ 30 ദിവസേനയുള്ള വൈദിക മുഹൂർത്തങ്ങളുടെ വിവരങ്ങളും അവയ്ക്ക് അനുയോജ്യമായ ഭക്തിഗാന പ്ലേലിസ്റ്റുകളും നൽകിയിരിക്കുന്നു. ഓരോ മുഹൂർത്തത്തിലെയും പ്രധാന ദേവതയെ അടിസ്ഥാനമാക്കിയാണ് ഓഡിയോ ഫയലുകൾ തിരഞ്ഞെടുത്തിരിക്കുന്നത്."
+                    ) : currentLanguage === "te" ? (
+                      "ఇక్కడ 30 దినసరి వైదిక ముహూర్తముల యొక్క వివరములు మరియు వాటికి తగిన భక్తి కీర్తనల ప్లేలిస్టులు పొందుపరచబడినవి. ప్రతి ముహూర్తమునకు అధిపతియైన దైవము ఆధారముగా ఈ గీతములు ఎంపిక చేయబడినవి."
+                    ) : (
+                      "Here is the complete scientific report of the 30 daily Vedic Muhurtas (15 Day Muhurtas & 15 Night Muhurtas) with their respective ruling deities, spiritual quality (Shubha/Ashubha), and custom-tailored archival devotional playlists containing appropriate, dedicated audio files."
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Grid of 30 Muhurtas */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="muhurtas_report_grid">
+                {MUHURTAS_LIST.map((muhurta) => {
+                  const playlist = getPlaylistForMuhurta(muhurta.index);
+                  const isAuspicious = muhurta.quality.toLowerCase().includes("auspicious") || muhurta.quality.toLowerCase() === "shubha";
+                  const qualityColor = isAuspicious 
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200" 
+                    : "bg-rose-50 text-rose-800 border-rose-200";
+
+                  const name = currentLanguage === "ml" 
+                    ? muhurta.nameMalayalam 
+                    : currentLanguage === "te" 
+                      ? muhurta.nameTelugu 
+                      : muhurta.nameEnglish;
+
+                  const deity = currentLanguage === "ml" 
+                    ? muhurta.deityMalayalam 
+                    : currentLanguage === "te" 
+                      ? muhurta.deityTelugu 
+                      : muhurta.deityEnglish;
+
+                  return (
+                    <div 
+                      key={muhurta.index} 
+                      className="p-4 rounded-xl border border-[#D4C3A3]/40 bg-white shadow-3xs flex flex-col gap-3 hover:border-amber-400 transition-all duration-200"
+                    >
+                      {/* Header Info */}
+                      <div className="flex items-start justify-between gap-2 border-b border-neutral-100 pb-2">
+                        <div>
+                          <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-amber-800 uppercase tracking-wider mb-0.5">
+                            {muhurta.isNight ? "🌙 Night" : "☀️ Day"} Muhurta #{muhurta.index}
+                          </span>
+                          <h4 className="font-serif font-black text-[#5D4037] text-sm leading-tight">
+                            {name} <span className="text-xs text-neutral-400">({muhurta.nameSanskrit})</span>
+                          </h4>
+                          <span className="text-[10.5px] text-stone-600 block mt-0.5">
+                            <strong className="text-stone-800">{currentLanguage === "ml" ? "ദേവത:" : currentLanguage === "te" ? "అధిపతి దైవం:" : "Deity:"}</strong> {deity}
+                          </span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full border text-[9px] font-bold tracking-wide uppercase shrink-0 ${qualityColor}`}>
+                          {muhurta.quality}
+                        </span>
+                      </div>
+
+                      {/* Associated Playlist of appropriate files */}
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#8D6E63]">
+                          📋 {currentLanguage === "ml" ? "പ്ലേലിസ്റ്റ് ഗാനങ്ങൾ" : currentLanguage === "te" ? "ప్లేలిస్ట్ గీతములు" : "Assigned Playlist"} ({playlist.length} {currentLanguage === "ml" ? "ഗാനങ്ങൾ" : currentLanguage === "te" ? "కీర్తనలు" : "tracks"})
+                        </span>
+                        {playlist.length === 0 ? (
+                          <span className="text-xs text-stone-400 italic font-sans pl-1">
+                            No tracks loaded for this specific archetype.
+                          </span>
+                        ) : (
+                          <div className="flex flex-col gap-1">
+                            {playlist.map((track) => {
+                              const trackName = currentLanguage === "ml" 
+                                ? track.nameMl 
+                                : currentLanguage === "te" 
+                                  ? track.nameTe 
+                                  : track.nameEn;
+                              return (
+                                <div 
+                                  key={track.id} 
+                                  className="flex items-center justify-between gap-2 p-1.5 rounded bg-[#FAF7F1] hover:bg-amber-50 border border-[#D4C3A3]/20 text-[11px] font-medium text-stone-700 transition"
+                                >
+                                  <div className="flex items-center gap-1.5 truncate">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0"></div>
+                                    <span className="truncate" title={trackName}>{trackName}</span>
+                                  </div>
+                                  <span className="text-[8.5px] uppercase tracking-wider text-[#8D6E63] shrink-0 font-bold bg-[#F1E5D5]/50 px-1 py-0.5 rounded">
+                                    {track.category}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {activeTab === 'audio' && (
             <div className="flex flex-col gap-5 animate-fade-in" id="sastra_tab_audio">
               <div className="p-4 rounded-2xl bg-[#FCF8F2] border border-[#D4C3A3] flex items-start gap-4">
@@ -590,6 +724,77 @@ export default function SastraReportModal({
                       "To provide high-quality, continuous playback, the application sources all devotional content and stotras directly from open-source, royalty-free MP3 directories on archive.org. Raw paths are targeted to guarantee high-performance buffered feeds without routing hiccups."
                     )}
                   </span>
+                </div>
+              </div>
+
+              {/* Audio Count & Statistics Card */}
+              <div className="p-4 bg-gradient-to-br from-amber-50/60 to-orange-50/40 border border-[#D4C3A3]/60 rounded-2xl" id="sastra_audio_stats_card">
+                <h4 className="font-serif text-[13px] font-bold text-amber-950 mb-3 border-b border-[#D4C3A3]/40 pb-1 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-amber-700">●</span>
+                    {currentLanguage === "ml" ? "വൈദിക ഭണ്ഡാര വിവരങ്ങൾ" : currentLanguage === "te" ? "భక్తి భాండాగార సమాచారం" : "Archival Devotional Treasury Statistics"}
+                  </div>
+                  <span className="font-mono text-[11px] sm:text-xs text-amber-900 font-extrabold bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-200/50">
+                    {audioStats.total} {currentLanguage === "ml" ? "ഫയലുകൾ" : currentLanguage === "te" ? "ఆడియోలు" : "Total Audio Files"}
+                  </span>
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "സഹസ്രനാമങ്ങൾ" : currentLanguage === "te" ? "సహస్రనామాలు" : "Sahasranamams"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.sahasranamams}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "വൈദിക മന്ത്രങ്ങൾ" : currentLanguage === "te" ? "మంత్రాలు" : "Vedic Mantras"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.mantras}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "സ്തോത്രങ്ങൾ" : currentLanguage === "te" ? "స్తోత్రాలు" : "Sacred Stotrams"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.stotrams}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "അഷ്ടകങ്ങൾ" : currentLanguage === "te" ? "అష్టకాలు" : "Ashtakams"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.ashtakams}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "തിരുപ്പതി/സുപ്രഭാതം" : currentLanguage === "te" ? "తిరుపతి/సుప్రభాతం" : "Tirupati / Suprabhatam"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.suprabhatams}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "ഭക്തിഗാനങ്ങൾ" : currentLanguage === "te" ? "భక్తి గీతాలు" : "Devotional Songs"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.songs}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "ഷിർദ്ദി ഭക്തിഗാനങ്ങൾ" : currentLanguage === "te" ? "షిరిడి భక్తి గీతాలు" : "Shirdi Devotion"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.shirdi}</span>
+                  </div>
+                  <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {currentLanguage === "ml" ? "അയ്യപ്പൻ ഭക്തിഗാനങ്ങൾ" : currentLanguage === "te" ? "అయ్యప్ప భక్తి గీతాలు" : "Ayyappa Devotion"}
+                    </span>
+                    <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.ayyappa}</span>
+                  </div>
+                  {audioStats.others > 0 && (
+                    <div className="p-2.5 bg-white border border-[#D4C3A3]/40 rounded-xl col-span-2 sm:col-span-4 flex flex-col justify-between">
+                      <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                        {currentLanguage === "ml" ? "മറ്റു ഭക്തിഗാനങ്ങൾ" : currentLanguage === "te" ? "ఇతర భక్తి గీతాలు" : "Devotional Songs & Others"}
+                      </span>
+                      <span className="text-[18px] font-serif font-black text-amber-950 mt-1">{audioStats.others}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -667,17 +872,17 @@ export default function SastraReportModal({
                       {currentLanguage === "ml" ? "അഡ്മിനിസ്ട്രേറ്റർ & ക്യൂറേറ്റർ" : currentLanguage === "te" ? "నిర్వాహకుడు & క్యూరేటర్" : "Project Administrator & Curator"}
                     </span>
                     <span className="font-serif font-black text-[15px] text-[#3E2723]">
-                      Sreeraj Sreenivasan
+                      Admin Drigganita Music
                     </span>
                   </div>
                 </div>
 
                 <a 
-                  href="mailto:sreerajs@hotmail.com" 
+                  href="mailto:astromusic@mobitrendz.com" 
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5D4037] text-white font-sans font-semibold text-[12px] transition hover:bg-amber-850 cursor-pointer shadow-3xs hover:shadow-xs self-stretch sm:self-auto text-center justify-center"
                 >
                   <Mail className="h-4 w-4" />
-                  <span>sreerajs@hotmail.com</span>
+                  <span>astromusic@mobitrendz.com</span>
                   <ExternalLink className="h-3 w-3 opacity-80" />
                 </a>
               </div>
